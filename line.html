@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>直线</title>
+</head>
+<body>
+<canvas width="400px" height="300px" style="width: 400px;height: 300px;background-color: #999999"></canvas>
+<script src="dat.gui.min.js"></script>
+<script src="require.min.js"></script>
+<script>
+    require(['xesMath'], function (xesMath) {
+        var canvas = document.getElementsByTagName('canvas')[0];
+        var context = canvas.getContext('2d');
+        var canvasW = canvas.clientWidth;
+        var canvasH = canvas.clientHeight;
+        var range = [200, -200];
+        var data = {
+            k: 1,
+            b: 0,
+        };
+        var line = xesMath.getLine(data.k, data.b, range);
+        var points = line.points;
+        var gui = new dat.GUI();
+        gui.add(data, 'k', -50, 50).step(0.1).onChange(onChange);
+        gui.add(data, 'b', -100, 100).step(1).onChange(onChange);
+
+        onChange();
+
+        function onChange() {
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.clearRect(0, 0, canvasW, canvasH);
+            context.translate(canvasW >> 1, canvasH >> 1);
+            context.scale(1, -1);
+            points = xesMath.getLine(data.k, data.b, range).points;
+            xesMath.drawAxis(context, canvasW - 10, canvasH - 10);
+            xesMath.draw(context, points);
+        }
+    })
+</script>
+
+</body>
+</html>

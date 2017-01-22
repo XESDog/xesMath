@@ -19,33 +19,39 @@ define(function () {
      * @param step
      * @returns {{points: Array}}
      */
-    function getParabola(a, b, c, range, step) {
+    function getParabola(a = 0, b = 0, c = 0, range = null, step = 0) {
         var points = [];
-        var min = range[0];
-        var max = range[1];
-        var i = min;
         var y, D, h, k, x;
-        while (i <= max) {
-            y = a * Math.pow(i, 2) + b * i + c;
-            if (y < MAX) {
-                points.push(i, y);
+
+        if (range !== null) {
+            var min = range[0];
+            var max = range[1];
+            var i = min;
+            while (i <= max) {
+                y = a * Math.pow(i, 2) + b * i + c;
+                if (y < MAX) {
+                    points.push(i, y);
+                }
+                i += step;
             }
-            i += step;
         }
         //D>0方程有两个不相等的根
         //D=0方程有两个相等的根
         //D<0方程无实数根，
         D = b * b - 4 * a * c;
         //抛物线顶点为(h,k)
-        h = -b / 2 * a;
-        k = -D / 4 * a;
+        h = -b / (2 * a);
+        k = -D / (4 * a);
         //根，用数组表示
         x = function () {
             var value = [];
             if (D > 0) {
-                value.push((-b + Math.sqrt(D)) / 2 * a);
-                value.push((-b - Math.sqrt(D)) / 2 * a);
-            } else if (D = 0) {
+                var sqrtD = Math.sqrt(D);
+                value.push((-b + sqrtD) / (2 * a));
+                value.push((-b - sqrtD) / (2 * a));
+            }
+            //TODO:计算机算出来，可能是极小的数，而不是0
+            else if (D === 0) {
                 value.push(h);
             } else {
 
@@ -179,33 +185,62 @@ define(function () {
      * @param context
      * @param w
      * @param h
+     * @param divide 坐标轴上的刻度间隔
+     * @param divideLine 坐标轴上刻度长
      */
-    function drawAxis(context, w, h) {
+    function drawAxis(context, w, h, divide = 10, divideLine = 6) {
+        var halfW = w / 2;
+        var halfH = h / 2;
+        var i = 0, j = 0;
+
+        function drawLine(k, b, range) {
+            draw(context, getLine(k, b, range).points);
+        }
+
         context.save();
-        context.beginPath();
-        context.strokeStyle = 'red';
-        draw(context, getLine(0, 0, [-w / 2, w / 2]).points);
-        context.translate(w / 2, 0);
-        drawArrow(context);
-        context.translate(-w / 2, 0);
+        {
+            context.strokeStyle = 'red';
+            draw(context, getLine(0, 0, [-halfW, halfW]).points);
+            i = divide;
+            j = -divide;
+            while (i < halfW && j > -halfW) {
+                drawLine(Math.MAX_VALUE, i, [divideLine, 0]);
+                drawLine(Math.MAX_VALUE, j, [divideLine, 0]);
+                i += divide;
+                j -= divide
+            }
 
-        context.strokeStyle = 'green';
-        draw(context, getLine(Math.MAX_VALUE, 0, [-h / 2, h / 2]).points);
-        context.translate(0, h / 2);
-        context.rotate(Math.PI / 2);
-        drawArrow(context);
-        context.translate(0, -h / 2);
-        context.rotate(-Math.PI / 2);
+            context.translate(halfW, 0);
+            drawArrow(context);
+        }
+        context.restore();
 
+        context.save();
+        {
+            context.strokeStyle = 'green';
+            draw(context, getLine(Math.MAX_VALUE, 0, [-halfH, halfH]).points);
+            i = divide;
+            j = -divide;
+            while (i < halfH && j > -halfH) {
+                drawLine(0, i, [divideLine, 0]);
+                drawLine(0, j, [divideLine, 0]);
+                i += divide;
+                j -= divide
+            }
+
+            context.translate(0, halfH);
+            context.rotate(Math.PI / 2);
+            drawArrow(context);
+        }
         context.restore();
     }
 
     function drawArrow(context) {
         context.beginPath();
-        context.moveTo(0, -2);
-        context.lineTo(4, 0);
-        context.lineTo(0, 2);
-        context.lineTo(0, -2);
+        context.moveTo(0, -3);
+        context.lineTo(6, 0);
+        context.lineTo(0, 3);
+        context.lineTo(0, -3);
         context.stroke();
     }
 

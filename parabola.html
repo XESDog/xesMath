@@ -84,6 +84,7 @@
             draw(line.points);
 
 
+            //抛物线和直线的交点
             result.x = xesMath.getParabola(parabolaData.a, parabolaData.b - lineData.k, parabolaData.c - lineData.b).x;
             if (result.x.length > 0) {
                 draw(xesMath.getCircle(result.x[0], lineData.k * result.x[0] + lineData.b, 4, 0.1).points);

@@ -88,7 +88,9 @@ define(function () {
             points.push(max, k * max + b);
         }
         return {
-            points: points
+            points: points,
+            x: -b / k,
+            y:b,
         };
     }
 
@@ -107,7 +109,7 @@ define(function () {
 
     /**
      * x=h+a*cosƟ
-     * y=k+b.sinƟ
+     * y=k+b*sinƟ
      * @param h
      * @param k
      * @param a
@@ -117,7 +119,7 @@ define(function () {
      */
     function getOval(h, k, a, b, step) {
         var points = [];
-        var i = 0;
+        var i = 0, x, y;
         var pi2 = Math.PI * 2;
         //小于3份，按3份算
         if (pi2 / step < 3) {
@@ -135,8 +137,42 @@ define(function () {
                 points.push(h + a * Math.cos(0), k + b * Math.sin(0));
             }
         }
+        //和x轴交点
+        x = function () {
+            var temp = 1 - (k * k) / (b * b);
+            var value = [];
+            if (temp > 0) {
+                temp *= a * a;
+                temp = Math.sqrt(temp);
+                value.push(temp + h);
+                value.push(-temp + h);
+            } else if (temp === 0) {
+                value.push(h);
+            } else {
+
+            }
+            return value;
+        }();
+        //和y轴交点
+        y = function () {
+            var temp = 1 - (h * h) / (a * a);
+            var value = []
+            if (temp > 0) {
+                temp *= b * b;
+                temp = Math.sqrt(temp);
+                value.push(temp + k);
+                value.push(-temp + k);
+            } else if (temp === 0) {
+                value.push(k);
+            } else {
+
+            }
+            return value;
+        }();
         return {
-            points: points
+            points: points,
+            x: x,
+            y: y,
         };
     }
 

@@ -14,20 +14,22 @@ gulp.task('default', ['clean:build', 'convertJS', 'browserify'], function () {
 
 
 });
+gulp.task('sample',['convertJS','browserify-app'],function () {
+
+})
+
 gulp.task('clean:build', function () {
-    var stream=del(['build'])
-    return stream;
+    return del(['build'])
 });
-gulp.task('convertJS',['clean:build'], function (cb) {
-    var stream = gulp.src('src/**/*.js')
+gulp.task('convertJS', ['clean:build'], function () {
+    return gulp.src('src/**/*.js')
         .pipe(babel({presets: ['es2015']}))
         .pipe(uglify())
         .pipe(gulp.dest('build'));
-    return stream;
 })
-gulp.task('browserify', ['convertJS'], function () {
-    gulp.src('build/Main.js')
+gulp.task('browserify-app', ['convertJS'], function () {
+    gulp.src('build/sample/app.js')
         .pipe(browserify())
-        .pipe(rename('coniferCone.min.js'))
-        .pipe(gulp.dest('build'))
+        .pipe(rename('app.min.js'))
+        .pipe(gulp.dest('src/sample'))
 })

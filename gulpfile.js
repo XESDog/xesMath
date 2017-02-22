@@ -14,20 +14,20 @@ gulp.task('default', ['clean:build', 'convertJS', 'browserify'], function () {
 
 
 });
-gulp.task('sample',['convertJS','browserify-app'],function () {
+gulp.task('sample', ['convertJS', 'browserify:app'], function () {
 
 })
 
 gulp.task('clean:build', function () {
-    return del(['build'])
+    return del(['build']);
 });
 gulp.task('convertJS', ['clean:build'], function () {
     return gulp.src('src/**/*.js')
         .pipe(babel({presets: ['es2015']}))
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(gulp.dest('build'));
 })
-gulp.task('browserify-app', ['convertJS'], function () {
+gulp.task('browserify:app', ['convertJS'], function () {
     gulp.src('build/sample/app.js')
         .pipe(browserify())
         .pipe(rename('app.min.js'))

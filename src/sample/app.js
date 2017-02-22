@@ -5,12 +5,25 @@
 import {Point} from "../coniferCone/geom/Point";
 import {Line} from "../coniferCone/geom/Line";
 
+/**
+ * 交点和角度
+ */
+class IntersectionAndAngle {
+    constructor(intersection, angle) {
+        this.intersection = intersection;
+        this.angle = angle;
+    }
+}
+
 main();
 function main() {
 
     let canvas = document.getElementsByTagName('canvas')[0];
     let startP = new Point(), endP = new Point(), shape, shapes = new Map();
+    //交点绘制对象
     let intersectionShape = new createjs.Shape();
+    //角度文本集合
+    let angleContainer = new createjs.Container();
 
 
     let data = {
@@ -25,6 +38,7 @@ function main() {
     createjs.Ticker.addEventListener('tick', stage);
 
     stage.addChild(intersectionShape);
+    stage.addChild(angleContainer);
 
     stage.addEventListener('stagemousedown', onStageMouseDown);
 
@@ -70,7 +84,8 @@ function main() {
                 let l2 = shapes.get(keys[j]);
                 let intersection = l1.getLineIntersection(l2);
                 if (intersection !== null) {
-                    intersections.push(l1.getLineIntersection(l2));
+                    var data = new IntersectionAndAngle(intersection, l1.getIntersectionAngle(l2));
+                    intersections.push(data);
                 }
             }
         }
@@ -80,8 +95,15 @@ function main() {
         g.setStrokeStyle(1);
 
         intersections.forEach(function (value) {
+            let intersection = value.intersection;
+            let angle = value.angle.toFixed(2);
+            let txt = new createjs.Text(angle, '12px Arial', 'blue');
             g.beginStroke('red');
-            g.drawCircle(value.x, value.y, 4);
+            g.drawCircle(intersection.x, intersection.y, 4);
+            angleContainer.addChild(txt);
+            txt.x = intersection.x;
+            txt.y = intersection.y;
+
             g.endStroke();
 
         })

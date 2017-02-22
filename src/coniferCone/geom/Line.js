@@ -3,11 +3,13 @@
  */
 
 import {Point} from "./Point";
+import {Angle} from "./Angle";
 class Line {
     constructor() {
         //垂直于x轴
         if (arguments.length === 1) {
             this.x = arguments[0];
+            this.k = Infinity;
         }
         //k,b
         else if (arguments.length === 2) {
@@ -35,12 +37,21 @@ class Line {
         this.range = [-999999999, 999999999];
     }
 
+    /**
+     * 获取用于绘图的点
+     * @returns {*}
+     */
     get points() {
         let p;
-        if (this.isVertical&&this.x!==undefined&&this.x!==null) {
+        if (this.isVertical) {
             p = [new Point(this.x, this.range[0])
                 , new Point(this.x, this.range[1])];
-        } else {
+        }
+        else if (this.isHorizontal) {
+            p = [new Point(this.range[0], this.b)
+                , new Point(this.range[1], this.b)];
+        }
+        else {
             p = [new Point(this.range[0], this.k * this.range[0] + this.b)
                 , new Point(this.range[1], this.k * this.range[1] + this.b)];
         }
@@ -48,11 +59,19 @@ class Line {
     }
 
     /**
-     * 垂直于x轴
+     * 垂直
      * @returns {boolean}
      */
     get isVertical() {
         return this.k === Infinity || this.k === -Infinity || this.b === Infinity || this.b === -Infinity;
+    }
+
+    /**
+     * 水平
+     * @returns {boolean}
+     */
+    get isHorizontal() {
+        return this.k === 0;
     }
 
     /**
@@ -62,6 +81,9 @@ class Line {
      * @returns {boolean}
      */
     isPointInLine(x, y) {
+        if (this.isVertical) {
+            return x === this.x;
+        }
         return this.k * x + this.b === y;
     }
 
@@ -73,7 +95,13 @@ class Line {
         //平行
         if (this.k === l.k) {
             return null;
-        } else {
+        }
+        //两条线中有一条垂直
+        else if (this.isVertical || l.isVertical) {
+            return new Point(this.isVertical ? this.x : l.x
+                , this.isVertical ? l.k * this.x + l.b : this.k * l.x + this.b);
+        }
+        else {
             const k1 = this.k;
             const b1 = this.b;
             const k2 = l.k;
@@ -91,6 +119,12 @@ class Line {
      * @returns {Line}
      */
     getVerticalLine(x, y) {
+        if (this.isVertical) {
+            return new Line(0, y);
+        }
+        if (this.isHorizontal) {
+            return new Line(x);
+        }
         return new Line(-1 / this.k, y + x / this.k);
     }
 
@@ -101,10 +135,8 @@ class Line {
      * @returns {*}
      */
     getVerticalIntersection(x, y) {
-
-        if (this.isPointInLine(x, y))return [x, y];
-
-        var verticalLine = this.getVerticalLine(x, y);
+        if (this.isPointInLine(x, y))return new Point(x, y);
+        let verticalLine = this.getVerticalLine(x, y);
         return this.getLineIntersection(verticalLine);
     }
 
@@ -112,11 +144,11 @@ class Line {
      * 获取对称点
      * @param x
      * @param y
-     * @returns {[*,*]}
+     * @returns {Point}
      */
     getSymmetryPoint(x, y) {
 
-        if (this.isPointInLine(x, y))return [x, y];
+        if (this.isPointInLine(x, y))return new Point(x, y);
 
         //换算成一般式
         const A = this.k;
@@ -124,21 +156,28 @@ class Line {
         const C = this.b;
         const temp = 2 * (A * x + B * y + C) / (A * A + B * B);
 
-        return [x - A * temp, y - B * temp];
+        return new Point(x - A * temp, y - B * temp);
 
     }
 
     /**
-     * 获取两线夹角（0<=angle<90）
+     * 获取两线夹角（0<=angle<=90）
      * @param l
      * @returns {number}
      */
     getIntersectionAngle(l) {
-        const A1 = this.k;
-        const B1 = -1;
-        const A2 = l.k;
-        const B2 = -1;
-        return Math.atan(Math.abs(A2 * B1 - A1 * B2) / A1 * A2 + B1 * B2);
+        let angle = new Angle();
+        //平行
+        if (this.k === l.k) {
+            return 0;
+        }
+        //如果有一条直线垂直于x轴，计算出另外一条直线和x轴之间的夹角，然后用90度减去这个夹角
+        if (this.isVertical || l.isVertical) {
+            angle.radian = Math.atan(Math.abs(this.isVertical ? l.k : this.k))
+            return 90 - angle.acute;
+        }
+        angle.radian = Math.atan(this.k) - Math.atan(l.k);
+        return angle.acute;
     }
 
 }

@@ -1,21 +1,22 @@
 /**
  * Created by work on 2017/2/21.
  */
+import {Distance} from "../util/Distance";
 
 class Point {
     constructor(x = 0, y = 0) {
         this.setValues(x, y);
     }
 
-    setValues(x=0, y=0) {
+    setValues(x = 0, y = 0) {
         this.x = x;
         this.y = y;
         return this;
     }
 
-    copy(point) {
-        this.x = point.x;
-        this.y = point.y;
+    copy(p) {
+        this.x = p.x;
+        this.y = p.y;
         return this;
     }
 
@@ -24,19 +25,19 @@ class Point {
      * @param p
      * @returns {number}
      */
-    distance(p){
-        let w=p.x-this.x;
-        let h=p.y-this.y;
-        return Math.sqrt(w * w + h * h);
+    distance(p) {
+        return Distance.pointToPoint(this, p);
     }
+
     /**
-     * Returns a clone of the Point instance.
+     * 返回该点的一个克隆
      * @method clone
-     * @return {Point} a clone of the Point instance.
+     * @return {Point} 克隆之后的Point实例
      **/
     clone() {
         return new Point(this.x, this.y);
     }
+
     /**
      * Returns a string representation of this object.
      * @method toString

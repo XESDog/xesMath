@@ -20,18 +20,17 @@ function main() {
 
     let canvas = document.getElementsByTagName('canvas')[0];
     let startP = new Point(), endP = new Point(), shape, shapes = new Map();
-    //交点绘制对象
+    //绘制交点
     let intersectionShape = new createjs.Shape();
     //角度文本集合
     let angleContainer = new createjs.Container();
-
 
     let data = {
         drawOption: 'line'
     };
 
     let ui = new dat.GUI();
-    ui.add(data, 'drawOption', ['line', 'lineSegment', 'ellipse', 'rectangle', 'circle']);
+    ui.add(data, 'drawOption', ['line', /*'lineSegment', 'ellipse', 'rectangle', 'circle'*/]);
 
     let stage = new createjs.Stage(canvas);
     createjs.Ticker.setFPS(60);
@@ -84,7 +83,7 @@ function main() {
                 let l2 = shapes.get(keys[j]);
                 let intersection = l1.getLineIntersection(l2);
                 if (intersection !== null) {
-                    var data = new IntersectionAndAngle(intersection, l1.getIntersectionAngle(l2));
+                    let data = new IntersectionAndAngle(intersection, l1.getIntersectionAngle(l2));
                     intersections.push(data);
                 }
             }

@@ -4,6 +4,7 @@
 
 import {Point} from "./Point";
 import {Angle} from "./Angle";
+import {Intersection} from '../util/Intersection';
 class Line {
     constructor() {
         //垂直于x轴
@@ -75,12 +76,21 @@ class Line {
     }
 
     /**
-     * 是否点在直线上
+     * 是否点在直线上，支持传入Point作为参数以及x、y轴坐标作为参数
+     *
+     *  let p=new Point(1,2);
+     *  isPointInLine(p)
+     *  isPointInLine(1,2);
+     *
      * @param x
      * @param y
      * @returns {boolean}
      */
     isPointInLine(x, y) {
+        if (arguments.length === 1 && x instanceof Point) {
+            y = x.y;
+            x = x.x;
+        }
         if (this.isVertical) {
             return x === this.x;
         }
@@ -92,24 +102,7 @@ class Line {
      * @param l
      */
     getLineIntersection(l) {
-        //平行
-        if (this.k === l.k) {
-            return null;
-        }
-        //两条线中有一条垂直
-        else if (this.isVertical || l.isVertical) {
-            return new Point(this.isVertical ? this.x : l.x
-                , this.isVertical ? l.k * this.x + l.b : this.k * l.x + this.b);
-        }
-        else {
-            const k1 = this.k;
-            const b1 = this.b;
-            const k2 = l.k;
-            const b2 = l.b;
-            const x = (b2 - b1) / (k1 - k2);
-            return new Point(x, k1 * x + b1);
-        }
-
+        return Intersection.lineToLine(this, l);
     }
 
     /**

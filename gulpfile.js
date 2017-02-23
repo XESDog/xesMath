@@ -14,7 +14,7 @@ gulp.task('default', ['clean:build', 'convertJS', 'browserify'], function () {
 
 
 });
-gulp.task('sample', ['convertJS', 'browserify:app'], function () {
+gulp.task('sample', ['convertJS', 'browserify:line','browserify:lineSegment'], function () {
 
 })
 
@@ -27,9 +27,15 @@ gulp.task('convertJS', ['clean:build'], function () {
         // .pipe(uglify())
         .pipe(gulp.dest('build'));
 })
-gulp.task('browserify:app', ['convertJS'], function () {
-    gulp.src('build/sample/app.js')
+gulp.task('browserify:line', ['convertJS'], function () {
+    gulp.src('build/sample/line.js')
         .pipe(browserify())
-        .pipe(rename('app.min.js'))
+        .pipe(rename('line.min.js'))
+        .pipe(gulp.dest('src/sample'))
+})
+gulp.task('browserify:lineSegment', ['convertJS'], function () {
+    gulp.src('build/sample/lineSegment.js')
+        .pipe(browserify())
+        .pipe(rename('lineSegment.min.js'))
         .pipe(gulp.dest('src/sample'))
 })

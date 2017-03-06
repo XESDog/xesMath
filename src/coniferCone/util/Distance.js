@@ -12,7 +12,7 @@ class Distance {
      * @param p2
      * @returns {number}
      */
-    static pointToPoint = function (p1, p2) {
+    static pointToPoint (p1, p2) {
         let w = p1.x - p2.x;
         let h = p1.y - p2.y;
         return Math.sqrt(w * w + h * h);
@@ -24,7 +24,7 @@ class Distance {
      * @returns {number}
      * @constructor
      */
-    static LineSegmentToLineSegment = function (ls1, ls2) {
+    static lineSegmentToLineSegment (ls1, ls2) {
 
         return 0;
     };
@@ -34,9 +34,25 @@ class Distance {
      * @param ls
      * @returns {number}
      */
-    static pointToLineSegment = function (p, ls) {
-
-        return 0;
+    static pointToLineSegment (p, ls) {
+        //点是否在线段上
+        if (ls.isPointInLineSegment) {
+            return 0;
+        } else {
+            //根据r值来判断P点在AB上的投影是否在线段上
+            let AB = ls.toVector2();
+            let AP = p.toVector2().sub(ls.p1);
+            let len = ls.length;
+            let r = AP.dot(AB) / (len * len);
+            if (r >= 1) {
+                return Distance.pointToPoint(p, ls.p2);
+            } else if (r <= 0) {
+                return Distance.pointToPoint(p, ls.p1);
+            } else {
+                let intersection = ls.p1.toVector2().lerp(ls.p2.toVector2(), r);
+                return Distance.pointToPoint(p, intersection);
+            }
+        }
     };
     /**
      * 点到圆的距离
@@ -44,7 +60,7 @@ class Distance {
      * @param c
      * @returns {number}
      */
-    static pointToCircle = function (p, c) {
+    static pointToCircle (p, c) {
         return 0;
     }
 }

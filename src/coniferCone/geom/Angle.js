@@ -1,52 +1,65 @@
 class Angle {
-    static ANGLE_TO_RADIAN = Math.PI / 180;
-    static RADIAN_TO_ANGLE = 180 / Math.PI;
-
     /**
-     * 限定角度范围在 0<=angle<360
-     * @param angle
+     * 限定角度范围在 0~360，弧度范围限定在0~2π
+     * @param degree
+     * @param isDegree
      * @returns {*}
      */
-    static normal(angle) {
-        while (angle >= 360) {
-            angle -= 360;
+    static normal(degree = 0, isDegree = true) {
+        //弧度
+        if (isDegree) {
+            while (degree >= 360) {
+                degree -= 360;
+            }
+            while (degree < 0) {
+                degree += 360;
+            }
+            return degree;
         }
-        while (angle < 0) {
-            angle += 360;
+        //角度
+        else {
+            let angle = degree;
+            while (angle >= Angle.PI2) {
+                angle -= Angle.PI2;
+            }
+            while (angle < 0) {
+                angle += Angle.PI2;
+            }
+            return angle;
         }
-        return angle;
+
     }
 
     /**
-     *
-     * @param angle
-     * @param isRadian  第一个参数表示弧度
+     * 初始化Angle，可以传入弧度或者角度
+     * @param degree
+     * @param isDegree  默认为true，表示第一个参数是弧度，设置为false，则表示第一个参数是角度
      *
      */
-    constructor(angle = 0, isRadian = false) {
-        if (isRadian) {
-            this.radian = angle;
+    constructor(degree = 0, isDegree = true) {
+        if (isDegree) {
+            this.degree = degree;
         } else {
-            this.angle = angle;
+            this.angle = degree;
         }
+    }
+
+    set degree(value) {
+        this._degree = Angle.normal(value);
+        this._angle = this._degree * Angle.DEGREE_TO_ANGLE;
+    }
+
+    get degree() {
+        return this._degree;
     }
 
     set angle(value) {
-        this._angle = Angle.normal(value);
-        this._radian = this._angle * Angle.ANGLE_TO_RADIAN;
+        this._degree = Angle.normal(value * Angle.ANGLE_TO_DEGREE);
+        this._angle = this._degree * Angle.DEGREE_TO_ANGLE;
     }
 
     get angle() {
         return this._angle;
-    }
-
-    set radian(value) {
-        this._angle = Angle.normal(value * Angle.RADIAN_TO_ANGLE);
-        this._radian = this._angle * Angle.ANGLE_TO_RADIAN;
-    }
-
-    get radian() {
-        return this._radian;
     }
 
     /**
@@ -54,7 +67,7 @@ class Angle {
      * @returns {boolean}
      */
     get isAcute() {
-        return this._angle < 90 || this._angle > 270;
+        return this._degree < 90 || this._degree > 270;
     }
 
     /**
@@ -62,7 +75,7 @@ class Angle {
      * @returns {boolean}
      */
     get isRight() {
-        return this._angle === 90 || this._angle === 270;
+        return this._degree === 90 || this._degree === 270;
     }
 
     /**
@@ -70,7 +83,7 @@ class Angle {
      * @returns {boolean}
      */
     get isObtuse() {
-        return this._angle > 90 && this._angle < 270;
+        return this._degree > 90 && this._degree < 270;
     }
 
     /**
@@ -78,7 +91,7 @@ class Angle {
      * @returns {number}
      */
     get acute() {
-        let a = this._angle;
+        let a = this._degree;
         while (a > 90) {
             a -= 180;
         }
@@ -98,5 +111,8 @@ class Angle {
     }
 
 }
+Angle.DEGREE_TO_ANGLE = Math.PI / 180;
+Angle.ANGLE_TO_DEGREE = 180 / Math.PI;
+Angle.PI2 = Math.PI * 2;
 
 export {Angle}

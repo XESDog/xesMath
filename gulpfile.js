@@ -39,3 +39,9 @@ gulp.task('browserify:lineSegment', ['convertJS'], function () {
         .pipe(rename('lineSegment.min.js'))
         .pipe(gulp.dest('src/sample'))
 })
+gulp.task('browserify:angle', ['convertJS'], function () {
+    gulp.src('build/sample/angle.js')
+        .pipe(browserify())
+        .pipe(rename('angle.min.js'))
+        .pipe(gulp.dest('src/sample'))
+})

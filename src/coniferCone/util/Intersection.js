@@ -1,3 +1,5 @@
+import {Point} from "../geom/Point";
+import {Vector2} from "../geom/Vector2";
 class Intersection {
     constructor() {
         throw new Error('Instantiation is not allowed!')
@@ -9,7 +11,7 @@ class Intersection {
      * @param l2
      * @returns {*}
      */
-    static lineToLine = function (l1, l2) {
+    static lineToLine(l1, l2) {
         //平行
         if (l1.k === l2.k) {
             return null;
@@ -27,7 +29,48 @@ class Intersection {
             const x = (b2 - b1) / (k1 - k2);
             return new Point(x, k1 * x + b1);
         }
-    };
+    }
+
+    /**
+     * 两条线段的交点
+     * @param ls1
+     * @param ls2
+     * @returns {Point}
+     */
+    static lineSegmentToLineSegment(ls1, ls2) {
+        //AB为线段ls1的两个端点，CD为线段ls2的两个端点
+        let A = ls1.p1;
+        let B = ls1.p2;
+        let C = ls2.p1;
+        let D = ls2.p2;
+
+        let AB = Vector2.subVectors(B, A);
+        let AC = Vector2.subVectors(C, A);
+        let AD = Vector2.subVectors(D, A);
+        let CD = Vector2.subVectors(D, C);
+        let CA = Vector2.subVectors(A, C);
+        let CB = Vector2.subVectors(B, C);
+
+        let ABXAC = AB.cross(AC);
+        let ABXAD = AB.cross(AD);
+        let CDXCA = CD.cross(CA);
+        let CDXCB = CD.cross(CB);
+
+        //有叉乘值为0的项，则表示有有一点在另外一条线段上
+        if (ABXAC === 0 || ABXAD === 0 || CDXCA === 0 || CDXCB === 0) {
+            //todo:暂不处理有一点在另外一条线段上的情况
+            return null;
+        }
+        else {
+            //ABXAC和ABXAD方向相反，并且CDXCA和CDXCB方向相反则必定相交
+            if ((ABXAC ^ ABXAD) < 0 && (CDXCA ^ CDXCB) < 0) {
+                let n = Math.abs(ABXAC / ABXAD);
+                return Vector2.lerpVectors(C, D, n / (1 + n));
+            } else {
+                return null;
+            }
+        }
+    }
 }
 
 export {Intersection}

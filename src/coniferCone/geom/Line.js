@@ -166,10 +166,10 @@ class Line {
         }
         //如果有一条直线垂直于x轴，计算出另外一条直线和x轴之间的夹角，然后用90度减去这个夹角
         if (this.isVertical || l.isVertical) {
-            angle.radian = Math.atan(Math.abs(this.isVertical ? l.k : this.k))
+            angle.angle = Math.atan(Math.abs(this.isVertical ? l.k : this.k))
             return 90 - angle.acute;
         }
-        angle.radian = Math.atan(this.k) - Math.atan(l.k);
+        angle.angle = Math.atan(this.k) - Math.atan(l.k);
         return angle.acute;
     }
 

@@ -1,174 +1,70 @@
 /**
- * Created by work on 2017/2/21.
+ * Created by work on 2017/3/1.
  */
 
-import {Point} from "../coniferCone/geom/Point";
+import {Edge} from "./ui/Edge";
+import {Vector2} from "../coniferCone/geom/Vector2";
 import {LineSegment} from "../coniferCone/geom/LineSegment";
+import {Intersection} from "../coniferCone/util/Intersection";
 
-/**
- * 交点和角度
- */
-class IntersectionAndAngle {
-    constructor(intersection, angle) {
-        this.intersection = intersection;
-        this.angle = angle;
+let app = new Vue({
+    el: "#app",
+    data: {
+        p1: new Vector2(200, 150),
+        p2: new Vector2(300, 100),
+        p3: new Vector2(300, 100),
+        p4: new Vector2(300, 200),
     }
+});
+
+let stage = new createjs.Stage(document.getElementsByTagName('canvas')[0]);
+createjs.Ticker.setFPS(60);
+createjs.Ticker.addEventListener('tick', stage);
+
+let edgeA = new Edge(app.p1, app.p2);
+let edgeB = new Edge(app.p3, app.p4);
+let intersectionShape = new createjs.Shape();
+
+stage.addChild(edgeA);
+stage.addChild(edgeB);
+stage.addChild(intersectionShape);
+
+let nextTick = false;
+function changeAngle() {
+    if (!nextTick) {
+        app.$nextTick(function () {
+
+            let lsA = new LineSegment(app.p1.x, app.p1.y, app.p2.x, app.p2.y);
+            let lsB = new LineSegment(app.p3.x, app.p3.y, app.p4.x, app.p4.y);
+            let intersection = Intersection.lineSegmentToLineSegment(lsA, lsB);
+            let g = intersectionShape.graphics;
+            g.clear();
+            if (intersection) {
+                g.setStrokeStyle(1);
+                g.beginStroke('black');
+                g.drawCircle(intersection.x, intersection.y, 4);
+            } else {
+
+            }
+            nextTick = false;
+        });
+        nextTick = true;
+    }
+
 }
 
-main();
-function main() {
+app.$watch('p1.x', changeAngle);
+app.$watch('p1.y', changeAngle);
+app.$watch('p2.x', changeAngle);
+app.$watch('p2.y', changeAngle);
+app.$watch('p3.x', changeAngle);
+app.$watch('p3.y', changeAngle);
+app.$watch('p4.x', changeAngle);
+app.$watch('p4.y', changeAngle);
 
-    let canvas = document.getElementsByTagName('canvas')[0];
-    let startP = new Point(), endP = new Point(), shape, shapes = new Map();
-    //绘制交点
-    let intersectionShape = new createjs.Shape();
-    //角度文本集合
-    let angleContainer = new createjs.Container();
 
-    let data = {
-        drawOption: 'lineSegment'
-    };
 
-    let ui = new dat.GUI();
-    ui.add(data, 'drawOption', ['lineSegment', /*'lineSegment', 'ellipse', 'rectangle', 'circle'*/]);
 
-    let stage = new createjs.Stage(canvas);
-    createjs.Ticker.setFPS(60);
-    createjs.Ticker.addEventListener('tick', stage);
 
-    stage.addChild(intersectionShape);
-    stage.addChild(angleContainer);
 
-    stage.addEventListener('stagemousedown', onStageMouseDown);
 
-    function onStageMouseDown(e) {
-        stage.addEventListener('stagemousemove', onStageMouseMove);
-        stage.addEventListener('stagemouseup', onStageMouseUp);
-        startP.setValues(e.stageX, e.stageY);
-        shape = new createjs.Shape();
-        stage.addChild(shape);
-    }
-
-    function onStageMouseMove(e) {
-        endP.setValues(e.stageX, e.stageY);
-        draw();
-    }
-
-    function onStageMouseUp(e) {
-        stage.removeEventListener('stagemousemove', onStageMouseMove);
-        stage.removeEventListener('stagemouseup', onStageMouseUp);
-
-        endP.setValues(e.stageX, e.stageY);
-        draw();
-
-        if (startP.distance(endP) < 4) {
-            stage.removeChild(shape);
-        } else {
-            shapes.set(shape, new LineSegment(startP.x, startP.y, endP.x, endP.y));
-            drawIntersection();
-        }
-        startP.setValues(0, 0);
-        endP.setValues(0, 0);
-    }
-
-    /**
-     * 绘制直线间的交点
-     */
-    function drawIntersection() {
-        let intersections = [];
-        let keys = [...shapes.keys()];
-        for (let i = 0; i < keys.length; i++) {
-            let l1 = shapes.get(keys[i]);
-            for (let j = i + 1; j < keys.length; j++) {
-                let l2 = shapes.get(keys[j]);
-                let intersection = l1.getLineIntersection(l2);
-                if (intersection !== null) {
-                    let data = new IntersectionAndAngle(intersection, l1.getIntersectionAngle(l2));
-                    intersections.push(data);
-                }
-            }
-        }
-
-        let g = intersectionShape.graphics;
-        g.clear();
-        g.setStrokeStyle(1);
-
-        intersections.forEach(function (value) {
-            let intersection = value.intersection;
-            let angle = value.angle.toFixed(2);
-            let txt = new createjs.Text(angle, '12px Arial', 'blue');
-            g.beginStroke('red');
-            g.drawCircle(intersection.x, intersection.y, 4);
-            angleContainer.addChild(txt);
-            txt.x = intersection.x;
-            txt.y = intersection.y;
-
-            g.endStroke();
-
-        })
-    }
-
-    function draw() {
-        let g = shape.graphics;
-
-        g.clear();
-        g.setStrokeStyle(1);
-        g.beginStroke('black');
-
-        switch (data.drawOption) {
-            case 'line': {
-                let x = startP.x;
-                let y = startP.y;
-                let k = (endP.y - y) / (endP.x - x);
-                let b = y - x * k;
-                const MAX = 9999;
-
-                if (k === Infinity || k === -Infinity) {
-                    g.moveTo(x, -MAX);
-                    g.lineTo(x, MAX);
-                } else {
-                    g.moveTo(-MAX, -MAX * k + b);
-                    g.lineTo(MAX, MAX * k + b);
-                }
-            }
-                break;
-            case 'lineSegment': {
-                let x = startP.x;
-                let y = startP.y;
-                shape.x = x;
-                shape.y = y;
-                g.moveTo(0, 0);
-                g.lineTo(endP.x - x, endP.y - y);
-            }
-                break;
-            case 'ellipse': {
-                let w = endP.x - startP.x;
-                let h = endP.y - startP.y;
-                shape.x = startP.x;
-                shape.y = startP.y;
-                g.drawEllipse(0, 0, w, h);
-            }
-                break;
-            case 'circle': {
-                let w = endP.x - startP.x;
-                let h = endP.y - startP.y;
-                let offsetX = w / 2;
-                let offsetY = h / 2;
-                let radius = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2)) / 2;
-                shape.x = startP.x + offsetX;
-                shape.y = startP.y + offsetY;
-                g.drawCircle(0, 0, radius);
-                break;
-            }
-            case 'rectangle': {
-                let w = endP.x - startP.x;
-                let h = endP.y - startP.y;
-                shape.x = startP.x;
-                shape.y = startP.y;
-                g.drawRect(0, 0, w, h);
-            }
-                break;
-
-        }
-    }
-}

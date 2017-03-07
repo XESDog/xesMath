@@ -2,7 +2,7 @@
  * Created by work on 2017/2/21.
  */
 import {Distance} from "../util/Distance";
-import {Vector2} from "./Vector2";
+import {Vector} from "./Vector";
 
 class Point {
     constructor(x = 0, y = 0) {
@@ -50,10 +50,10 @@ class Point {
 
     /**
      * 转换成Vector2
-     * @returns {Vector2}
+     * @returns {Vector}
      */
-    toVector2(){
-        return new Vector2(this.x, this.y);
+    toVector(){
+        return new Vector(this.x, this.y);
     }
 }
 export {Point};

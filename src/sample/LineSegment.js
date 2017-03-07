@@ -2,18 +2,21 @@
  * Created by work on 2017/3/1.
  */
 
-import {Edge} from "./ui/Edge";
-import {Vector2} from "../coniferCone/geom/Vector2";
+import {UI_LineSegment} from "./ui/UI_LineSegment";
+import {UI_Point} from "./ui/UI_Point";
+import {Vector} from "../coniferCone/geom/Vector";
 import {LineSegment} from "../coniferCone/geom/LineSegment";
 import {Intersection} from "../coniferCone/util/Intersection";
 
 let app = new Vue({
     el: "#app",
     data: {
-        p1: new Vector2(200, 150),
-        p2: new Vector2(300, 100),
-        p3: new Vector2(300, 100),
-        p4: new Vector2(300, 200),
+        p: new Vector(100, 100),
+        p1: new Vector(200, 150),
+        p2: new Vector(300, 100),
+        p3: new Vector(300, 100),
+        p4: new Vector(300, 200),
+
     }
 });
 
@@ -21,12 +24,15 @@ let stage = new createjs.Stage(document.getElementsByTagName('canvas')[0]);
 createjs.Ticker.setFPS(60);
 createjs.Ticker.addEventListener('tick', stage);
 
-let edgeA = new Edge(app.p1, app.p2);
-let edgeB = new Edge(app.p3, app.p4);
+let edgeA = new UI_LineSegment(app.p1, app.p2);
+let edgeB = new UI_LineSegment(app.p3, app.p4);
+let dot = new UI_Point(app.p);
+
 let intersectionShape = new createjs.Shape();
 
 stage.addChild(edgeA);
 stage.addChild(edgeB);
+stage.addChild(dot);
 stage.addChild(intersectionShape);
 
 let nextTick = false;

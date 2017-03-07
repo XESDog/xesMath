@@ -7,7 +7,7 @@
  * 基于threejs->Vector2，
  */
 
-class Vector2 {
+class Vector {
 
     constructor(x, y) {
         this.x = x || 0;
@@ -62,7 +62,7 @@ class Vector2 {
      * setComponent(1,value)表示设置y值
      * @param index
      * @param value
-     * @returns {Vector2}
+     * @returns {Vector}
      */
     setComponent(index, value) {
         switch (index) {
@@ -136,7 +136,7 @@ class Vector2 {
      * 两个矢量之和
      * @param a
      * @param b
-     * @returns {Vector2}
+     * @returns {Vector}
      */
     addVectors(a, b) {
 
@@ -148,7 +148,7 @@ class Vector2 {
     }
 
     static addVectors(a, b) {
-        return new Vector2().addVectors(a, b);
+        return new Vector().addVectors(a, b);
     }
 
     addScaledVector(v, s) {
@@ -194,7 +194,7 @@ class Vector2 {
     }
 
     static subVectors(a, b) {
-        return new Vector2().subVectors(a, b);
+        return new Vector().subVectors(a, b);
     }
 
     multiply(v) {
@@ -227,7 +227,7 @@ class Vector2 {
     /**
      * 做除法，点乘的变种
      * @param v
-     * @returns {Vector2}
+     * @returns {Vector}
      */
     divide(v) {
 
@@ -440,7 +440,7 @@ class Vector2 {
      *
      * @param v
      * @param alpha
-     * @returns {Vector2}
+     * @returns {Vector}
      */
     lerp(v, alpha) {
 
@@ -503,7 +503,7 @@ class Vector2 {
      * 旋转
      * @param center
      * @param angle
-     * @returns {Vector2}
+     * @returns {Vector}
      */
     rotateAround(center, angle) {
 
@@ -520,10 +520,13 @@ class Vector2 {
     }
 
     static lerpVectors(v1, v2, alpha) {
-        return new Vector2().lerpVectors(v1, v2, alpha)
+        return new Vector().lerpVectors(v1, v2, alpha)
 
+    }
+    toString() {
+        return "[Vector2 (x=" + this.x + " y=" + this.y + ")]";
     }
 }
 
 
-export {Vector2};
+export {Vector};

@@ -40,8 +40,8 @@ class Distance {
             return 0;
         } else {
             //根据r值来判断P点在AB上的投影是否在线段上
-            let AB = ls.toVector2();
-            let AP = p.toVector2().sub(ls.p1);
+            let AB = ls.toVector();
+            let AP = p.toVector().sub(ls.p1);
             let len = ls.length;
             let r = AP.dot(AB) / (len * len);
             if (r >= 1) {
@@ -49,7 +49,7 @@ class Distance {
             } else if (r <= 0) {
                 return Distance.pointToPoint(p, ls.p1);
             } else {
-                let intersection = ls.p1.toVector2().lerp(ls.p2.toVector2(), r);
+                let intersection = ls.p1.toVector().lerp(ls.p2.toVector(), r);
                 return Distance.pointToPoint(p, intersection);
             }
         }

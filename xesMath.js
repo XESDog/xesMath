@@ -62,8 +62,8 @@ define(function () {
             points: points,
             D: D,
             h: h,
-            k: k,
-            x: x,
+            _k: k,
+            _x: x,
         }
 
     }
@@ -89,8 +89,8 @@ define(function () {
         }
         return {
             points: points,
-            x: -b / k,
-            y:b,
+            _x: -b / k,
+            _y:b,
         };
     }
 
@@ -171,8 +171,8 @@ define(function () {
         }();
         return {
             points: points,
-            x: x,
-            y: y,
+            _x: x,
+            _y: y,
         };
     }
 

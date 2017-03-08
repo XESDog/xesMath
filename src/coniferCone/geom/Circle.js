@@ -3,16 +3,28 @@
  */
 class Circle {
     constructor(x, y, radius) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius
+        this._x = x;
+        this._y = y;
+        this._radius = radius
     }
 
     setValues(x, y, radius) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
+        this._x = x;
+        this._y = y;
+        this._radius = radius;
         return this;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    get radius() {
+        return this._radius;
     }
 
     /**
@@ -20,7 +32,7 @@ class Circle {
      * @returns {number}
      */
     get area() {
-        return Math.PI * this.radius * this.radius;
+        return Math.PI * this._radius * this._radius;
     }
 
     /**
@@ -28,7 +40,7 @@ class Circle {
      * @returns {number}
      */
     get circumference() {
-        return 2 * Math.PI * this.radius;
+        return 2 * Math.PI * this._radius;
     }
 
     /**
@@ -36,11 +48,11 @@ class Circle {
      * @returns {number}
      */
     get diameter() {
-        return 2 * this.radius;
+        return 2 * this._radius;
     }
 
     toString() {
-        return "[Circle (radius=" + this.radius + " circumference=" + this.circumference + " area=" + this.area + ")]";
+        return "[Circle (radius=" + this._radius + " circumference=" + this.circumference + " area=" + this.area + ")]";
     }
 
 }

@@ -37,11 +37,18 @@ class Angle {
      *
      */
     constructor(degree = 0, isDegree = true) {
+        this._degree=0;
+        this._angle=0;
+
+
         if (isDegree) {
             this.degree = degree;
         } else {
             this.angle = degree;
         }
+    }
+    clone(){
+        return new Angle(this._degree);
     }
 
     set degree(value) {

@@ -16,10 +16,10 @@
         var canvasH = canvas.clientHeight;
         var range = [200, -200];
         var data = {
-            k: 1,
-            b: 0,
+            _k: 1,
+            _b: 0,
         };
-        var line = xesMath.getLine(data.k, data.b, range);
+        var line = xesMath.getLine(data._k, data._b, range);
         var points = line.points;
         var gui = new dat.GUI();
         gui.add(data, 'k', -50, 50).step(0.1).onChange(onChange);
@@ -32,7 +32,7 @@
             context.clearRect(0, 0, canvasW, canvasH);
             context.translate(canvasW >> 1, canvasH >> 1);
             context.scale(1, -1);
-            points = xesMath.getLine(data.k, data.b, range).points;
+            points = xesMath.getLine(data._k, data._b, range).points;
             xesMath.drawAxis(context, canvasW - 10, canvasH - 10);
             xesMath.draw(context, points);
         }

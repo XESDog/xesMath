@@ -10,15 +10,23 @@ class Point {
     }
 
     setValues(x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
         return this;
     }
 
     copy(p) {
-        this.x = p.x;
-        this.y = p.y;
+        this._x = p._x;
+        this._y = p._y;
         return this;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
     }
 
     /**
@@ -36,7 +44,7 @@ class Point {
      * @return {Point} 克隆之后的Point实例
      **/
     clone() {
-        return new Point(this.x, this.y);
+        return new Point(this._x, this._y);
     }
 
     /**
@@ -45,15 +53,15 @@ class Point {
      * @return {String} a string representation of the instance.
      **/
     toString() {
-        return "[Point (x=" + this.x + " y=" + this.y + ")]";
+        return "[Point (x=" + this._x + " y=" + this._y + ")]";
     }
 
     /**
      * 转换成Vector2
      * @returns {Vector}
      */
-    toVector(){
-        return new Vector(this.x, this.y);
+    toVector() {
+        return new Vector(this._x, this._y);
     }
 }
 export {Point};

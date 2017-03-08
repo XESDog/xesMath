@@ -45,3 +45,9 @@ gulp.task('browserify:angle', ['convertJS'], function () {
         .pipe(rename('angle.min.js'))
         .pipe(gulp.dest('src/sample'))
 })
+gulp.task('browserify:index', ['convertJS'], function () {
+    gulp.src('build/sample/index.js')
+        .pipe(browserify())
+        .pipe(rename('index.min.js'))
+        .pipe(gulp.dest('src/sample'))
+})

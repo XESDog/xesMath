@@ -4,18 +4,23 @@
 
 import {Point} from "./Point";
 import {Angle} from "./Angle";
-import {Intersection} from '../util/Intersection';
+import {Intersection} from "../util/Intersection";
 class Line {
     constructor() {
+        this._k;
+        this._b;
+        this._x;
+        this._range;
+
         //垂直于x轴
         if (arguments.length === 1) {
-            this.x = arguments[0];
-            this.k = Infinity;
+            this._x = arguments[0];
+            this._k = Infinity;
         }
         //k,b
         else if (arguments.length === 2) {
-            this.k = arguments[0];
-            this.b = arguments[1];
+            this._k = arguments[0];
+            this._b = arguments[1];
 
         }
         //x1,y1,x2,y2
@@ -24,18 +29,34 @@ class Line {
             let y1 = arguments[1];
             let x2 = arguments[2];
             let y2 = arguments[3];
-            this.k = (y2 - y1) / (x2 - x1);
+            this._k = (y2 - y1) / (x2 - x1);
 
             if (this.isVertical) {
-                this.x = x1;
+                this._x = x1;
             } else {
-                this.b = y1 - this.k * x1;
+                this._b = y1 - this._k * x1;
             }
 
         } else {
             throw new Error('arguments number invalid');
         }
-        this.range = [-999999999, 999999999];
+        this._range = [-999999999, 999999999];
+    }
+
+    get k() {
+        return this._k;
+    }
+
+    get b() {
+        return this._b;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get range() {
+        return this._range;
     }
 
     /**
@@ -45,16 +66,16 @@ class Line {
     get points() {
         let p;
         if (this.isVertical) {
-            p = [new Point(this.x, this.range[0])
-                , new Point(this.x, this.range[1])];
+            p = [new Point(this._x, this._range[0])
+                , new Point(this._x, this._range[1])];
         }
         else if (this.isHorizontal) {
-            p = [new Point(this.range[0], this.b)
-                , new Point(this.range[1], this.b)];
+            p = [new Point(this._range[0], this._b)
+                , new Point(this._range[1], this._b)];
         }
         else {
-            p = [new Point(this.range[0], this.k * this.range[0] + this.b)
-                , new Point(this.range[1], this.k * this.range[1] + this.b)];
+            p = [new Point(this._range[0], this._k * this._range[0] + this._b)
+                , new Point(this._range[1], this._k * this._range[1] + this._b)];
         }
         return p;
     }
@@ -64,7 +85,7 @@ class Line {
      * @returns {boolean}
      */
     get isVertical() {
-        return this.k === Infinity || this.k === -Infinity || this.b === Infinity || this.b === -Infinity;
+        return this._k === Infinity || this._k === -Infinity || this._b === Infinity || this._b === -Infinity;
     }
 
     /**
@@ -72,7 +93,7 @@ class Line {
      * @returns {boolean}
      */
     get isHorizontal() {
-        return this.k === 0;
+        return this._k === 0;
     }
 
     /**
@@ -88,13 +109,13 @@ class Line {
      */
     isPointInLine(x, y) {
         if (arguments.length === 1 && x instanceof Point) {
-            y = x.y;
-            x = x.x;
+            y = x._y;
+            x = x._x;
         }
         if (this.isVertical) {
-            return x === this.x;
+            return x === this._x;
         }
-        return this.k * x + this.b === y;
+        return this._k * x + this._b === y;
     }
 
     /**
@@ -118,7 +139,7 @@ class Line {
         if (this.isHorizontal) {
             return new Line(x);
         }
-        return new Line(-1 / this.k, y + x / this.k);
+        return new Line(-1 / this._k, y + x / this._k);
     }
 
     /**
@@ -144,9 +165,9 @@ class Line {
         if (this.isPointInLine(x, y))return new Point(x, y);
 
         //换算成一般式
-        const A = this.k;
+        const A = this._k;
         const B = -1;
-        const C = this.b;
+        const C = this._b;
         const temp = 2 * (A * x + B * y + C) / (A * A + B * B);
 
         return new Point(x - A * temp, y - B * temp);
@@ -161,15 +182,15 @@ class Line {
     getIntersectionAngle(l) {
         let angle = new Angle();
         //平行
-        if (this.k === l.k) {
+        if (this._k === l._k) {
             return 0;
         }
         //如果有一条直线垂直于x轴，计算出另外一条直线和x轴之间的夹角，然后用90度减去这个夹角
         if (this.isVertical || l.isVertical) {
-            angle.angle = Math.atan(Math.abs(this.isVertical ? l.k : this.k))
+            angle.angle = Math.atan(Math.abs(this.isVertical ? l._k : this._k))
             return 90 - angle.acute;
         }
-        angle.angle = Math.atan(this.k) - Math.atan(l.k);
+        angle.angle = Math.atan(this._k) - Math.atan(l._k);
         return angle.acute;
     }
 

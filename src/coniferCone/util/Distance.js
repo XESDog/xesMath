@@ -12,11 +12,12 @@ class Distance {
      * @param p2
      * @returns {number}
      */
-    static pointToPoint (p1, p2) {
+    static pointToPoint(p1, p2) {
         let w = p1.x - p2.x;
         let h = p1.y - p2.y;
         return Math.sqrt(w * w + h * h);
     };
+
     /**
      * 两条线段之间的距离
      * @param ls1
@@ -24,17 +25,17 @@ class Distance {
      * @returns {number}
      * @constructor
      */
-    static lineSegmentToLineSegment (ls1, ls2) {
-
+    static lineSegmentToLineSegment(ls1, ls2) {
         return 0;
     };
+
     /**
      * 点到线段的距离
      * @param p
      * @param ls
      * @returns {number}
      */
-    static pointToLineSegment (p, ls) {
+    static pointToLineSegment(p, ls) {
         //点是否在线段上
         if (ls.isPointInLineSegment) {
             return 0;
@@ -54,13 +55,14 @@ class Distance {
             }
         }
     };
+
     /**
      * 点到圆的距离
      * @param p
      * @param c
      * @returns {number}
      */
-    static pointToCircle (p, c) {
+    static pointToCircle(p, c) {
         return 0;
     }
 }

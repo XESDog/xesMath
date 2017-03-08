@@ -15,12 +15,12 @@
         var canvasW = canvas.clientWidth;
         var canvasH = canvas.clientHeight;
         var data = {
-            x:0,
-            y:0,
+            _x:0,
+            _y:0,
             r: 20,
             step: 0.1,
         };
-        var circle = xesMath.getCircle(data.x,data.y,data.r, data.step);
+        var circle = xesMath.getCircle(data._x,data._y,data.r, data.step);
         var pointer = circle.points;
         var gui = new dat.GUI();
         gui.add(data, 'x', -100, 100).step(1).onChange(onChange);
@@ -35,7 +35,7 @@
             context.clearRect(0, 0, canvasW, canvasH);
             context.translate(canvasW >> 1, canvasH >> 1);
             context.scale(1, -1);
-            pointer = xesMath.getCircle(data.x,data.y,data.r, data.step).points;
+            pointer = xesMath.getCircle(data._x,data._y,data.r, data.step).points;
             xesMath.drawAxis(context, canvasW - 10, canvasH - 10);
             xesMath.draw(context, pointer);
         }

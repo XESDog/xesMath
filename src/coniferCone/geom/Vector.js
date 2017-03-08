@@ -8,51 +8,65 @@
  */
 
 class Vector {
+    set y(value) {
+        this._y = value;
+    }
+
+    set x(value) {
+        this._x = value;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    get x() {
+        return this._x;
+    }
 
     constructor(x, y) {
-        this.x = x || 0;
-        this.y = y || 0;
+        this._x = x || 0;
+        this._y = y || 0;
     }
 
     get width() {
-        return this.x;
+        return this._x;
     }
 
     set width(value) {
-        this.x = value;
+        this._x = value;
     }
 
     get height() {
-        return this.y;
+        return this._y;
     }
 
     set height(value) {
-        this.y = value;
+        this._y = value;
     }
 
-    //为配合代码命名的规范，修改set为setValues
     setValues(x, y) {
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
 
         return this;
     }
 
     setScalar(scalar) {
-        this.x = scalar;
-        this.y = scalar;
+        this._x = scalar;
+        this._y = scalar;
 
         return this;
     }
 
     setX(x) {
-        this.x = x;
+        this._x = x;
 
         return this;
     }
 
     setY(y) {
-        this.y = y;
+        this._y = y;
 
         return this;
     }
@@ -66,40 +80,36 @@ class Vector {
      */
     setComponent(index, value) {
         switch (index) {
-
             case 0:
-                this.x = value;
+                this._x = value;
                 break;
             case 1:
-                this.y = value;
+                this._y = value;
                 break;
             default:
                 throw new Error('index is out of range: ' + index);
-
         }
         return this;
     }
 
     getComponent(index) {
         switch (index) {
-
             case 0:
-                return this.x;
+                return this._x;
             case 1:
-                return this.y;
+                return this._y;
             default:
                 throw new Error('index is out of range: ' + index);
-
         }
     }
 
     clone() {
-        return new this.constructor(this.x, this.y);
+        return new this.constructor(this._x, this._y);
     }
 
     copy(v) {
-        this.x = v.x;
-        this.y = v.y;
+        this._x = v._x;
+        this._y = v._y;
 
         return this;
     }
@@ -112,22 +122,20 @@ class Vector {
      * @returns {*}
      */
     add(v, w) {
-
         if (w !== undefined) {
             console.warn('THREE.Vector2: .add() now only accepts one argument. Use .addVectors( a, b ) instead.');
             return this.addVectors(v, w);
         }
 
-        this.x += v.x;
-        this.y += v.y;
+        this._x += v._x;
+        this._y += v._y;
 
         return this;
     }
 
     addScalar(s) {
-
-        this.x += s;
-        this.y += s;
+        this._x += s;
+        this._y += s;
 
         return this;
     }
@@ -139,9 +147,8 @@ class Vector {
      * @returns {Vector}
      */
     addVectors(a, b) {
-
-        this.x = a.x + b.x;
-        this.y = a.y + b.y;
+        this._x = a._x + b._x;
+        this._y = a._y + b._y;
 
         return this;
 
@@ -152,45 +159,38 @@ class Vector {
     }
 
     addScaledVector(v, s) {
-
-        this.x += v.x * s;
-        this.y += v.y * s;
+        this._x += v._x * s;
+        this._y += v._y * s;
 
         return this;
 
     }
 
     sub(v, w) {
-
         if (w !== undefined) {
             console.warn('THREE.Vector2: .sub() now only accepts one argument. Use .subVectors( a, b ) instead.');
             return this.subVectors(v, w);
 
         }
 
-        this.x -= v.x;
-        this.y -= v.y;
+        this._x -= v._x;
+        this._y -= v._y;
 
         return this;
-
     }
 
     subScalar(s) {
-
-        this.x -= s;
-        this.y -= s;
+        this._x -= s;
+        this._y -= s;
 
         return this;
-
     }
 
     subVectors(a, b) {
-
-        this.x = a.x - b.x;
-        this.y = a.y - b.y;
+        this._x = a._x - b._x;
+        this._y = a._y - b._y;
 
         return this;
-
     }
 
     static subVectors(a, b) {
@@ -198,30 +198,26 @@ class Vector {
     }
 
     multiply(v) {
-
-        this.x *= v.x;
-        this.y *= v.y;
+        this._x *= v._x;
+        this._y *= v._y;
 
         return this;
-
     }
 
     multiplyScalar(scalar) {
-
         if (isFinite(scalar)) {
 
-            this.x *= scalar;
-            this.y *= scalar;
+            this._x *= scalar;
+            this._y *= scalar;
 
         } else {
 
-            this.x = 0;
-            this.y = 0;
+            this._x = 0;
+            this._y = 0;
 
         }
 
         return this;
-
     }
 
     /**
@@ -230,122 +226,77 @@ class Vector {
      * @returns {Vector}
      */
     divide(v) {
-
-        this.x /= v.x;
-        this.y /= v.y;
+        this._x /= v._x;
+        this._y /= v._y;
 
         return this;
-
     }
 
     divideScalar(scalar) {
-
         return this.multiplyScalar(1 / scalar);
-
     }
 
     min(v) {
-
-        this.x = Math.min(this.x, v.x);
-        this.y = Math.min(this.y, v.y);
+        this._x = Math.min(this._x, v._x);
+        this._y = Math.min(this._y, v._y);
 
         return this;
-
     }
 
     max(v) {
-
-        this.x = Math.max(this.x, v.x);
-        this.y = Math.max(this.y, v.y);
+        this._x = Math.max(this._x, v._x);
+        this._y = Math.max(this._y, v._y);
 
         return this;
-
     }
 
     clamp(min, max) {
-
         // This function assumes min < max, if this assumption isn't true it will not operate correctly
-
-        this.x = Math.max(min.x, Math.min(max.x, this.x));
-        this.y = Math.max(min.y, Math.min(max.y, this.y));
+        this._x = Math.max(min._x, Math.min(max._x, this._x));
+        this._y = Math.max(min._y, Math.min(max._y, this._y));
 
         return this;
-
     }
 
-    /*clampScalar () {
-
-     var min, max;
-
-     return function clampScalar( minVal, maxVal ) {
-
-     if ( min === undefined ) {
-
-     min = new Vector2();
-     max = new Vector2();
-
-     }
-
-     min.set( minVal, minVal );
-     max.set( maxVal, maxVal );
-
-     return this.clamp( min, max );
-
-     };
-
-     }();*/
-
     clampLength(min, max) {
-
-        var length = this.length();
+        let length = this.length();
 
         return this.multiplyScalar(Math.max(min, Math.min(max, length)) / length);
-
     }
 
     floor() {
-
-        this.x = Math.floor(this.x);
-        this.y = Math.floor(this.y);
+        this._x = Math.floor(this._x);
+        this._y = Math.floor(this._y);
 
         return this;
-
     }
 
     ceil() {
-
-        this.x = Math.ceil(this.x);
-        this.y = Math.ceil(this.y);
+        this._x = Math.ceil(this._x);
+        this._y = Math.ceil(this._y);
 
         return this;
-
     }
 
     round() {
-
-        this.x = Math.round(this.x);
-        this.y = Math.round(this.y);
+        this._x = Math.round(this._x);
+        this._y = Math.round(this._y);
 
         return this;
-
     }
 
     roundToZero() {
-
-        this.x = ( this.x < 0 ) ? Math.ceil(this.x) : Math.floor(this.x);
-        this.y = ( this.y < 0 ) ? Math.ceil(this.y) : Math.floor(this.y);
+        this._x = ( this._x < 0 ) ? Math.ceil(this._x) : Math.floor(this._x);
+        this._y = ( this._y < 0 ) ? Math.ceil(this._y) : Math.floor(this._y);
 
         return this;
-
     }
 
     negate() {
-
-        this.x = -this.x;
-        this.y = -this.y;
+        this._x = -this._x;
+        this._y = -this._y;
 
         return this;
-
     }
 
     /**
@@ -354,7 +305,7 @@ class Vector {
      * @returns {number}
      */
     dot(v) {
-        return this.x * v.x + this.y * v.y;
+        return this._x * v._x + this._y * v._y;
     }
 
     /**
@@ -364,29 +315,23 @@ class Vector {
      * @returns {number}
      */
     cross(v) {
-        return this.x * v.y - this.y * v.x;
+        return this._x * v._y - this._y * v._x;
     }
 
     lengthSq() {
-
-        return this.x * this.x + this.y * this.y;
-
+        return this._x * this._x + this._y * this._y;
     }
 
     get length() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
+        return Math.sqrt(this._x * this._x + this._y * this._y);
     }
 
     set length(length) {
-
         return this.multiplyScalar(length / this.length);
-
     }
 
     lengthManhattan() {
-
-        return Math.abs(this.x) + Math.abs(this.y);
-
+        return Math.abs(this._x) + Math.abs(this._y);
     }
 
     normalize() {
@@ -404,34 +349,26 @@ class Vector {
     }
 
     get angle() {
-
         // computes the angle in radians with respect to the positive x-axis
 
-        var angle = Math.atan2(this.y, this.x);//-π~π
+        var angle = Math.atan2(this._y, this._x);//-π~π
 
         if (angle < 0) angle += 2 * Math.PI;//0~2π
 
         return angle;
-
     }
 
     distanceTo(v) {
-
         return Math.sqrt(this.distanceToSquared(v));
-
     }
 
     distanceToSquared(v) {
-
-        var dx = this.x - v.x, dy = this.y - v.y;
+        var dx = this._x - v._x, dy = this._y - v._y;
         return dx * dx + dy * dy;
-
     }
 
     distanceToManhattan(v) {
-
-        return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
-
+        return Math.abs(this._x - v._x) + Math.abs(this._y - v._y);
     }
 
 
@@ -443,60 +380,48 @@ class Vector {
      * @returns {Vector}
      */
     lerp(v, alpha) {
-
-        this.x += ( v.x - this.x ) * alpha;
-        this.y += ( v.y - this.y ) * alpha;
+        this._x += ( v._x - this._x ) * alpha;
+        this._y += ( v._y - this._y ) * alpha;
 
         return this;
-
     }
 
     lerpVectors(v1, v2, alpha) {
-
         return this.subVectors(v2, v1).multiplyScalar(alpha).add(v1);
-
     }
 
     equals(v) {
-
-        return ( ( v.x === this.x ) && ( v.y === this.y ) );
-
+        return ( ( v._x === this._x ) && ( v._y === this._y ) );
     }
 
     fromArray(array, offset) {
-
         if (offset === undefined) offset = 0;
 
-        this.x = array[offset];
-        this.y = array[offset + 1];
+        this._x = array[offset];
+        this._y = array[offset + 1];
 
         return this;
-
     }
 
     toArray(array, offset) {
-
         if (array === undefined) array = [];
         if (offset === undefined) offset = 0;
 
-        array[offset] = this.x;
-        array[offset + 1] = this.y;
+        array[offset] = this._x;
+        array[offset + 1] = this._y;
 
         return array;
-
     }
 
     fromAttribute(attribute, index, offset) {
-
         if (offset === undefined) offset = 0;
 
         index = index * attribute.itemSize + offset;
 
-        this.x = attribute.array[index];
-        this.y = attribute.array[index + 1];
+        this._x = attribute.array[index];
+        this._y = attribute.array[index + 1];
 
         return this;
-
     }
 
     /**
@@ -506,27 +431,24 @@ class Vector {
      * @returns {Vector}
      */
     rotateAround(center, angle) {
+        let c = Math.cos(angle), s = Math.sin(angle);
 
-        var c = Math.cos(angle), s = Math.sin(angle);
+        let x = this._x - center._x;
+        let y = this._y - center._y;
 
-        var x = this.x - center.x;
-        var y = this.y - center.y;
-
-        this.x = x * c - y * s + center.x;
-        this.y = x * s + y * c + center.y;
+        this._x = x * c - y * s + center._x;
+        this._y = x * s + y * c + center._y;
 
         return this;
-
     }
 
     static lerpVectors(v1, v2, alpha) {
         return new Vector().lerpVectors(v1, v2, alpha)
-
     }
+
     toString() {
-        return "[Vector2 (x=" + this.x + " y=" + this.y + ")]";
+        return "[Vector2 (x=" + this._x + " y=" + this._y + ")]";
     }
 }
-
 
 export {Vector};

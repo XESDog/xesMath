@@ -16,12 +16,12 @@
         var canvasH = canvas.clientHeight;
         var data = {
             a: 50,
-            b: 50,
+            _b: 50,
             h: 50,
-            k: 50,
+            _k: 50,
             step: 0.1
         };
-        var oval = xesMath.getOval(data.h, data.k,data.a, data.b,  data.step);
+        var oval = xesMath.getOval(data.h, data._k,data.a, data._b,  data.step);
         var pointer = oval.points;
         var gui = new dat.GUI();
         gui.add(data, 'a', -100, 100).step(1).onChange(onChange);
@@ -37,19 +37,19 @@
             context.clearRect(0, 0, canvasW, canvasH);
             context.translate(canvasW >> 1, canvasH >> 1);
             context.scale(1, -1);
-            oval=xesMath.getOval(data.h, data.k,data.a, data.b,  data.step);
+            oval=xesMath.getOval(data.h, data._k,data.a, data._b,  data.step);
             pointer = oval.points;
             xesMath.drawAxis(context, canvasW - 10, canvasH - 10);
             xesMath.draw(context, pointer);
 
-            if(oval.x.length>0) {
-                oval.x[0]&&draw(xesMath.getCircle(oval.x[0], 0, 4, 0.1).points);
-                oval.x[1]&&draw(xesMath.getCircle(oval.x[1], 0, 4, 0.1).points);
+            if(oval._x.length>0) {
+                oval._x[0]&&draw(xesMath.getCircle(oval._x[0], 0, 4, 0.1).points);
+                oval._x[1]&&draw(xesMath.getCircle(oval._x[1], 0, 4, 0.1).points);
             }
 
-            if(oval.y.length>0) {
-                oval.y[0]&&draw(xesMath.getCircle(0,oval.y[0], 4, 0.1).points);
-                oval.y[1]&&draw(xesMath.getCircle(0,oval.y[1], 4, 0.1).points);
+            if(oval._y.length>0) {
+                oval._y[0]&&draw(xesMath.getCircle(0,oval._y[0], 4, 0.1).points);
+                oval._y[1]&&draw(xesMath.getCircle(0,oval._y[1], 4, 0.1).points);
             }
         }
         function fixedNumber(num) {

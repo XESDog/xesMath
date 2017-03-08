@@ -18,8 +18,8 @@ class Rectangle {
      */
     setValues(x, y, width, height) {
         // don't forget to update docs in the constructor if these change:
-        this.x = x || 0;
-        this.y = y || 0;
+        this._x = x || 0;
+        this._y = y || 0;
         this.width = width || 0;
         this.height = height || 0;
         return this;
@@ -38,19 +38,19 @@ class Rectangle {
     extend(x, y, width, height) {
         width = width || 0;
         height = height || 0;
-        if (x + width > this.x + this.width) {
-            this.width = x + width - this.x;
+        if (x + width > this._x + this.width) {
+            this.width = x + width - this._x;
         }
-        if (y + height > this.y + this.height) {
-            this.height = y + height - this.y;
+        if (y + height > this._y + this.height) {
+            this.height = y + height - this._y;
         }
-        if (x < this.x) {
-            this.width += this.x - x;
-            this.x = x;
+        if (x < this._x) {
+            this.width += this._x - x;
+            this._x = x;
         }
-        if (y < this.y) {
-            this.height += this.y - y;
-            this.y = y;
+        if (y < this._y) {
+            this.height += this._y - y;
+            this._y = y;
         }
         return this;
     };
@@ -66,8 +66,8 @@ class Rectangle {
      * @chainable
      */
     pad(top, left, bottom, right) {
-        this.x -= left;
-        this.y -= top;
+        this._x -= left;
+        this._y -= top;
         this.width += left + right;
         this.height += top + bottom;
         return this;
@@ -81,7 +81,7 @@ class Rectangle {
      * @chainable
      */
     copy(rectangle) {
-        return this.setValues(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        return this.setValues(rectangle._x, rectangle._y, rectangle.width, rectangle.height);
     };
 
     /**
@@ -96,7 +96,7 @@ class Rectangle {
     contains(x, y, width, height) {
         width = width || 0;
         height = height || 0;
-        return (x >= this.x && x + width <= this.x + this.width && y >= this.y && y + height <= this.y + this.height);
+        return (x >= this._x && x + width <= this._x + this.width && y >= this._y && y + height <= this._y + this.height);
     };
 
     /**
@@ -106,7 +106,7 @@ class Rectangle {
      * @return {Rectangle} A new rectangle describing the union.
      */
     union(rect) {
-        return this.clone().extend(rect.x, rect.y, rect.width, rect.height);
+        return this.clone().extend(rect._x, rect._y, rect.width, rect.height);
     };
 
     /**
@@ -117,18 +117,18 @@ class Rectangle {
      * @return {Rectangle} A new rectangle describing the intersection or null.
      */
     intersection(rect) {
-        var x1 = rect.x, y1 = rect.y, x2 = x1 + rect.width, y2 = y1 + rect.height;
-        if (this.x > x1) {
-            x1 = this.x;
+        var x1 = rect._x, y1 = rect._y, x2 = x1 + rect.width, y2 = y1 + rect.height;
+        if (this._x > x1) {
+            x1 = this._x;
         }
-        if (this.y > y1) {
-            y1 = this.y;
+        if (this._y > y1) {
+            y1 = this._y;
         }
-        if (this.x + this.width < x2) {
-            x2 = this.x + this.width;
+        if (this._x + this.width < x2) {
+            x2 = this._x + this.width;
         }
-        if (this.y + this.height < y2) {
-            y2 = this.y + this.height;
+        if (this._y + this.height < y2) {
+            y2 = this._y + this.height;
         }
         return (x2 <= x1 || y2 <= y1) ? null : new Rectangle(x1, y1, x2 - x1, y2 - y1);
     };
@@ -140,7 +140,7 @@ class Rectangle {
      * @return {Boolean} True if the rectangles intersect.
      */
     intersects(rect) {
-        return (rect.x <= this.x + this.width && this.x <= rect.x + rect.width && rect.y <= this.y + this.height && this.y <= rect.y + rect.height);
+        return (rect._x <= this._x + this.width && this._x <= rect._x + rect.width && rect._y <= this._y + this.height && this._y <= rect._y + rect.height);
     };
 
     /**
@@ -158,7 +158,7 @@ class Rectangle {
      * @return {Rectangle} a clone of the Rectangle instance.
      **/
     clone() {
-        return new Rectangle(this.x, this.y, this.width, this.height);
+        return new Rectangle(this._x, this._y, this.width, this.height);
     };
 
     /**
@@ -167,7 +167,7 @@ class Rectangle {
      * @return {String} a string representation of the instance.
      **/
     toString() {
-        return "[Rectangle (x=" + this.x + " y=" + this.y + " width=" + this.width + " height=" + this.height + ")]";
+        return "[Rectangle (x=" + this._x + " y=" + this._y + " width=" + this.width + " height=" + this.height + ")]";
     };
 
 }

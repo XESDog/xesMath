@@ -64,7 +64,7 @@ function main() {
         if (startP.distance(endP) < 4) {
             stage.removeChild(shape);
         } else {
-            shapes.set(shape, new Line(startP.x, startP.y, endP.x, endP.y));
+            shapes.set(shape, new Line(startP._x, startP._y, endP._x, endP._y));
             drawIntersection();
         }
         startP.setValues(0, 0);
@@ -98,10 +98,10 @@ function main() {
             let angle = value.angle.toFixed(2);
             let txt = new createjs.Text(angle, '12px Arial', 'blue');
             g.beginStroke('red');
-            g.drawCircle(intersection.x, intersection.y, 4);
+            g.drawCircle(intersection._x, intersection._y, 4);
             angleContainer.addChild(txt);
-            txt.x = intersection.x;
-            txt.y = intersection.y;
+            txt._x = intersection._x;
+            txt._y = intersection._y;
 
             g.endStroke();
 
@@ -117,9 +117,9 @@ function main() {
 
         switch (data.drawOption) {
             case 'line': {
-                let x = startP.x;
-                let y = startP.y;
-                let k = (endP.y - y) / (endP.x - x);
+                let x = startP._x;
+                let y = startP._y;
+                let k = (endP._y - y) / (endP._x - x);
                 let b = y - x * k;
                 const MAX = 9999;
 
@@ -133,38 +133,38 @@ function main() {
             }
                 break;
             case 'lineSegment': {
-                let x = startP.x;
-                let y = startP.y;
-                shape.x = x;
-                shape.y = y;
+                let x = startP._x;
+                let y = startP._y;
+                shape._x = x;
+                shape._y = y;
                 g.moveTo(0, 0);
-                g.lineTo(endP.x - x, endP.y - y);
+                g.lineTo(endP._x - x, endP._y - y);
             }
                 break;
             case 'ellipse': {
-                let w = endP.x - startP.x;
-                let h = endP.y - startP.y;
-                shape.x = startP.x;
-                shape.y = startP.y;
+                let w = endP._x - startP._x;
+                let h = endP._y - startP._y;
+                shape._x = startP._x;
+                shape._y = startP._y;
                 g.drawEllipse(0, 0, w, h);
             }
                 break;
             case 'circle': {
-                let w = endP.x - startP.x;
-                let h = endP.y - startP.y;
+                let w = endP._x - startP._x;
+                let h = endP._y - startP._y;
                 let offsetX = w / 2;
                 let offsetY = h / 2;
                 let radius = Math.sqrt(Math.pow(w, 2) + Math.pow(h, 2)) / 2;
-                shape.x = startP.x + offsetX;
-                shape.y = startP.y + offsetY;
+                shape._x = startP._x + offsetX;
+                shape._y = startP._y + offsetY;
                 g.drawCircle(0, 0, radius);
                 break;
             }
             case 'rectangle': {
-                let w = endP.x - startP.x;
-                let h = endP.y - startP.y;
-                shape.x = startP.x;
-                shape.y = startP.y;
+                let w = endP._x - startP._x;
+                let h = endP._y - startP._y;
+                shape._x = startP._x;
+                shape._y = startP._y;
                 g.drawRect(0, 0, w, h);
             }
                 break;

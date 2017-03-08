@@ -18,12 +18,12 @@
         var parabola, line;
         var parabolaData = {
             a: 0.04,
-            b: 1.8,
+            _b: 1.8,
             c: -50,
             D: '',
             h: '',
-            k: '',
-            x: '',
+            _k: '',
+            _x: '',
             peak: true,
             result: true,
         };
@@ -41,15 +41,15 @@
         folder.add(parabolaData, 'result').onChange(onChange);
 
         var lineData = {
-            k: 1.2,
-            b: 10
+            _k: 1.2,
+            _b: 10
         };
         var folder2 = gui.addFolder('直线');
         folder2.add(lineData, 'k', -50, 50).step(1).onChange(onChange);
         folder2.add(lineData, 'b', -100, 100).step(1).onChange(onChange);
 
         var result = {
-            x: '1'
+            _x: '1'
         };
         var folder3 = gui.addFolder('交点');
         folder3.add(result, 'x').listen();
@@ -66,30 +66,30 @@
 
             xesMath.drawAxis(context, canvasW - 10, canvasH - 10);
 
-            parabola = xesMath.getParabola(parabolaData.a, parabolaData.b, parabolaData.c, range, 1);
+            parabola = xesMath.getParabola(parabolaData.a, parabolaData._b, parabolaData.c, range, 1);
             parabolaData.D = fixedNumber(parabola.D);
             parabolaData.h = fixedNumber(parabola.h);
-            parabolaData.k = fixedNumber(parabola.k);
-            parabolaData.x = parabola.x.map(fixedNumber);
+            parabolaData._k = fixedNumber(parabola._k);
+            parabolaData._x = parabola._x.map(fixedNumber);
             draw(parabola.points);
             if (parabolaData.peak) {
-                draw(xesMath.getCircle(parabola.h, parabola.k, 4, 0.1).points);
+                draw(xesMath.getCircle(parabola.h, parabola._k, 4, 0.1).points);
             }
             if (parabolaData.result) {
-                draw(xesMath.getCircle(parabola.x[0], 0, 4, 0.1).points);
-                draw(xesMath.getCircle(parabola.x[1], 0, 4, 0.1).points);
+                draw(xesMath.getCircle(parabola._x[0], 0, 4, 0.1).points);
+                draw(xesMath.getCircle(parabola._x[1], 0, 4, 0.1).points);
             }
 
-            line = xesMath.getLine(lineData.k, lineData.b, range, 1);
+            line = xesMath.getLine(lineData._k, lineData._b, range, 1);
             draw(line.points);
 
 
             //抛物线和直线的交点
-            result.x = xesMath.getParabola(parabolaData.a, parabolaData.b - lineData.k, parabolaData.c - lineData.b).x;
-            if (result.x.length > 0) {
-                draw(xesMath.getCircle(result.x[0], lineData.k * result.x[0] + lineData.b, 4, 0.1).points);
-                draw(xesMath.getCircle(result.x[1], lineData.k * result.x[1] + lineData.b, 4, 0.1).points);
-                result.x = result.x.map(fixedNumber)
+            result._x = xesMath.getParabola(parabolaData.a, parabolaData._b - lineData._k, parabolaData.c - lineData._b)._x;
+            if (result._x.length > 0) {
+                draw(xesMath.getCircle(result._x[0], lineData._k * result._x[0] + lineData._b, 4, 0.1).points);
+                draw(xesMath.getCircle(result._x[1], lineData._k * result._x[1] + lineData._b, 4, 0.1).points);
+                result._x = result._x.map(fixedNumber)
             }
 
             context.restore();

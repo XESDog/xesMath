@@ -10,13 +10,21 @@ class LineSegment extends Line {
         let b = y1 - k * x1;
         super(k, b);
 
-        this.p1 = new Vector(x1, y1);
-        this.p2 = new Vector(x2, y2);
-        this.range = [Math.min(x1, x2), Math.max(x1, x2)];
+        this._p1 = new Vector(x1, y1);
+        this._p2 = new Vector(x2, y2);
+        this._range = [Math.min(x1, x2), Math.max(x1, x2)];
+    }
+
+    get p1() {
+        return this._p1;
+    }
+
+    get p2() {
+        return this._p2;
     }
 
     get length() {
-        return new Vector().subVectors(this.p1, this.p2).length;
+        return new Vector().subVectors(this._p1, this._p2).length;
     }
 
     /**
@@ -36,9 +44,10 @@ class LineSegment extends Line {
      */
     isPointInLineSegment(x, y) {
         let p = new Vector(x, y);
-        let p_p1 = Vector.subVectors(this.p1, p);
-        let p_p2 = Vector.subVectors(this.p2, p);
+        let p_p1 = Vector.subVectors(this._p1, p);
+        let p_p2 = Vector.subVectors(this._p2, p);
 
+        //todo:点是线段的两个端点的情况没考虑
         return p_p1.angleTo(p_p2) === Math.PI;
     }
 
@@ -51,7 +60,7 @@ class LineSegment extends Line {
     }
 
     toVector() {
-        return Vector.subVectors(this.p2, this.p1);
+        return Vector.subVectors(this._p2, this._p1);
     }
 }
 export {LineSegment};

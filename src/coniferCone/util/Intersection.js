@@ -18,8 +18,8 @@ class Intersection {
         }
         //两条线中有一条垂直
         else if (l1.isVertical || l2.isVertical) {
-            return new Point(l1.isVertical ? l1.x : l2.x
-                , l1.isVertical ? l2.k * l1.x + l2.b : l1.k * l2.x + l1.b);
+            return new Point(l1.isVertical ? l1._x : l2._x
+                , l1.isVertical ? l2.k * l1._x + l2.b : l1.k * l2._x + l1.b);
         }
         else {
             const k1 = l1.k;

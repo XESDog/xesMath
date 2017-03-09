@@ -39,10 +39,10 @@ class Intersection {
      */
     static lineSegmentToLineSegment(ls1, ls2) {
         //AB为线段ls1的两个端点，CD为线段ls2的两个端点
-        let A = ls1.p1;
-        let B = ls1.p2;
-        let C = ls2.p1;
-        let D = ls2.p2;
+        let A = ls1._p1;
+        let B = ls1._p2;
+        let C = ls2._p1;
+        let D = ls2._p2;
 
         let AB = Vector.subVectors(B, A);
         let AC = Vector.subVectors(C, A);

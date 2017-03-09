@@ -30,29 +30,29 @@
 
         var gui = new dat.GUI();
         var folder = gui.addFolder('抛物线');
-        folder.add(parabolaData, 'a', -2, 2).step(0.0001).onChange(onChange);
-        folder.add(parabolaData, 'b', -50, 50).step(0.1).onChange(onChange);
-        folder.add(parabolaData, 'c', -50, 50).step(0.1).onChange(onChange);
-        folder.add(parabolaData, 'D').listen();
-        folder.add(parabolaData, 'h').listen();
-        folder.add(parabolaData, 'k').listen();
-        folder.add(parabolaData, 'x').listen();
-        folder.add(parabolaData, 'peak').onChange(onChange);
-        folder.add(parabolaData, 'result').onChange(onChange);
+        World.add(parabolaData, 'a', -2, 2).step(0.0001).onChange(onChange);
+        World.add(parabolaData, 'b', -50, 50).step(0.1).onChange(onChange);
+        World.add(parabolaData, 'c', -50, 50).step(0.1).onChange(onChange);
+        World.add(parabolaData, 'D').listen();
+        World.add(parabolaData, 'h').listen();
+        World.add(parabolaData, 'k').listen();
+        World.add(parabolaData, 'x').listen();
+        World.add(parabolaData, 'peak').onChange(onChange);
+        World.add(parabolaData, 'result').onChange(onChange);
 
         var lineData = {
             _k: 1.2,
             _b: 10
         };
         var folder2 = gui.addFolder('直线');
-        folder2.add(lineData, 'k', -50, 50).step(1).onChange(onChange);
-        folder2.add(lineData, 'b', -100, 100).step(1).onChange(onChange);
+        World.add(lineData, 'k', -50, 50).step(1).onChange(onChange);
+        World.add(lineData, 'b', -100, 100).step(1).onChange(onChange);
 
         var result = {
             _x: '1'
         };
         var folder3 = gui.addFolder('交点');
-        folder3.add(result, 'x').listen();
+        World.add(result, 'x').listen();
         folder3.open();
 
         onChange();
@@ -86,7 +86,7 @@
 
             //抛物线和直线的交点
             result._x = xesMath.getParabola(parabolaData.a, parabolaData._b - lineData._k, parabolaData.c - lineData._b)._x;
-            if (result._x.length > 0) {
+            if (result._x._length > 0) {
                 draw(xesMath.getCircle(result._x[0], lineData._k * result._x[0] + lineData._b, 4, 0.1).points);
                 draw(xesMath.getCircle(result._x[1], lineData._k * result._x[1] + lineData._b, 4, 0.1).points);
                 result._x = result._x.map(fixedNumber)

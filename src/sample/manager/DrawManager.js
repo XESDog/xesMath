@@ -1,6 +1,10 @@
 import {Vector} from "../../coniferCone/geom/Vector";
+import {Line} from "../../coniferCone/geom/Line";
+import {LineSegment} from "../../coniferCone/geom/LineSegment";
 import {UI_Point} from "../ui/UI_Point";
 import {UI_LineSegment} from "../ui/UI_LineSegment";
+import {UI_Line} from "../ui/UI_Line";
+import {World} from "../ui/World";
 class DrawManager {
     constructor(stage) {
         this.stage = stage;
@@ -12,6 +16,7 @@ class DrawManager {
         this.option = 'point';
         this.optionMap = new Map();
         this.optionMap.set('point', [this.drawingPoint, this.drawPoint]);
+        this.optionMap.set('line', [this.drawingLine, this.drawLine]);
         this.optionMap.set('lineSegment', [this.drawingLineSegment, this.drawLineSegment]);
 
         this.stage.on('stagemousedown', this.onMouseDown, this);
@@ -19,7 +24,7 @@ class DrawManager {
     }
 
     get currentDrawingOption() {
-        return this.optionMap.get(this.option)[0]
+        return this.optionMap.get(this.option)[0];
     }
 
     get currentDrawOption() {
@@ -46,6 +51,8 @@ class DrawManager {
         this.endP = new Vector(e.stageX, e.stageY);
 
         this.currentDrawOption();
+
+        this.currentObject = null;
     }
 
     drawingPoint() {
@@ -53,28 +60,40 @@ class DrawManager {
     }
 
     drawPoint() {
-        let point = new UI_Point(this.endP,{hasDragManager:true});
-        this.stage.addChild(point);
+        let point = new UI_Point({hasDragManager: true});
+        World.add(point, this.endP);
+    }
+
+    drawingLine() {
+        if (this.currentObject === null) {
+            let l = new Line(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
+            let line = new UI_Line(l);
+            World.add(line, l);
+            this.currentObject=line;
+        } else {
+            this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
+        }
+    }
+
+    drawLine() {
+        if (this.currentObject !== null) {
+            this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
+        }
     }
 
     drawingLineSegment() {
         if (this.currentObject === null) {
-            this.currentObject = new UI_LineSegment(this.startP, this.endP);
-            this.stage.addChild(this.currentObject);
+            this.currentObject = new UI_LineSegment();
+            World.add(this.currentObject,new LineSegment(this.startP.x, this.startP.y, this.endP.x, this.endP.y))
         } else {
-            this.currentObject.p1 = this.startP;
-            this.currentObject.p2 = this.endP;
-            this.currentObject.update();
+            this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
         }
     }
 
     drawLineSegment() {
         if (this.currentObject !== null) {
-            this.currentObject.p1 = this.startP;
-            this.currentObject.p2 = this.endP;
-            this.currentObject.update();
+            this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
         }
-        this.currentObject = null;
     }
 
 }

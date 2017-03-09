@@ -116,6 +116,9 @@ class Angle {
     get obtuse() {
         return 180 - this.acute;
     }
+    toString(){
+        return `[Angle (degree="${this._degree}" angle="${this._angle}")]`;
+    }
 
 }
 Angle.DEGREE_TO_ANGLE = Math.PI / 180;

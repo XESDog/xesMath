@@ -19,6 +19,20 @@ class Distance {
     };
 
     /**
+     * 点到直线的距离
+     * @param p
+     * @param l
+     */
+    static pointToLine(p, l) {
+        let intersection = l.getVerticalIntersection(p.x, p.y);
+
+        return {
+            intersection: intersection,
+            distance: Distance.pointToPoint(p, intersection),
+        }
+    }
+
+    /**
      * 两条线段之间的距离
      * @param ls1
      * @param ls2
@@ -42,15 +56,15 @@ class Distance {
         } else {
             //根据r值来判断P点在AB上的投影是否在线段上
             let AB = ls.toVector();
-            let AP = p.toVector().sub(ls.p1);
-            let len = ls.length;
+            let AP = p.toVector().sub(ls._p1);
+            let len = ls._length;
             let r = AP.dot(AB) / (len * len);
             if (r >= 1) {
-                return Distance.pointToPoint(p, ls.p2);
+                return Distance.pointToPoint(p, ls._p2);
             } else if (r <= 0) {
-                return Distance.pointToPoint(p, ls.p1);
+                return Distance.pointToPoint(p, ls._p1);
             } else {
-                let intersection = ls.p1.toVector().lerp(ls.p2.toVector(), r);
+                let intersection = ls._p1.toVector().lerp(ls._p2.toVector(), r);
                 return Distance.pointToPoint(p, intersection);
             }
         }

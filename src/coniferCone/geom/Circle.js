@@ -51,6 +51,9 @@ class Circle {
         return 2 * this._radius;
     }
 
+    clone(){
+        return new Circle(this._x, this._y, this._radius);
+    }
     toString() {
         return "[Circle (radius=" + this._radius + " circumference=" + this.circumference + " area=" + this.area + ")]";
     }

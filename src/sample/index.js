@@ -3,6 +3,7 @@
  */
 
 import {DrawManager} from "./manager/DrawManager";
+import {World} from "./ui/World";
 
 function main() {
     let data = {
@@ -13,6 +14,8 @@ function main() {
     let stage = new createjs.Stage(document.getElementsByTagName('canvas')[0]);
 
     let drawManager = new DrawManager(stage);
+
+    World.init(stage);
 
     ui.add(data, 'option', ['point', 'line', 'lineSegment']).onChange(function (value) {
         drawManager.option = value;

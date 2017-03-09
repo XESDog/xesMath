@@ -22,7 +22,7 @@
         var exponent = xesMath.getPower(data.a, range, 1);
         var points = exponent.points;
         var gui = new dat.GUI();
-        gui.add(data, 'a', 0, 2).step(0.01).onChange(onChange);
+        World.add(data, 'a', 0, 2).step(0.01).onChange(onChange);
 
         onChange();
 

@@ -259,7 +259,7 @@ class Vector {
     }
 
     clampLength(min, max) {
-        let length = this.length();
+        let length = this._length();
 
         return this.multiplyScalar(Math.max(min, Math.min(max, length)) / length);
     }
@@ -327,7 +327,7 @@ class Vector {
     }
 
     set length(length) {
-        return this.multiplyScalar(length / this.length);
+        return this.multiplyScalar(length / this._length);
     }
 
     lengthManhattan() {
@@ -335,7 +335,7 @@ class Vector {
     }
 
     normalize() {
-        return this.divideScalar(this.length);
+        return this.divideScalar(this._length);
     }
 
     /**
@@ -344,7 +344,7 @@ class Vector {
      * @returns {number}
      */
     angleTo(v) {
-        let cos = this.dot(v) / (this.length * v.length);
+        let cos = this.dot(v) / (this._length * v._length);
         return Math.acos(cos);//0~π
     }
 

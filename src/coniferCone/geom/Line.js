@@ -6,29 +6,29 @@ import {Point} from "./Point";
 import {Angle} from "./Angle";
 import {Intersection} from "../util/Intersection";
 class Line {
-    constructor() {
+    constructor(...rest) {
         this._k;
         this._b;
         this._x;
         this._range;
 
         //垂直于x轴
-        if (arguments.length === 1) {
+        if (rest.length === 1) {
             this._x = arguments[0];
             this._k = Infinity;
         }
         //k,b
-        else if (arguments.length === 2) {
-            this._k = arguments[0];
-            this._b = arguments[1];
+        else if (rest.length === 2) {
+            this._k = rest[0];
+            this._b = rest[1];
 
         }
         //x1,y1,x2,y2
-        else if (arguments.length === 4) {
-            let x1 = arguments[0];
-            let y1 = arguments[1];
-            let x2 = arguments[2];
-            let y2 = arguments[3];
+        else if (rest.length === 4) {
+            let x1 = rest[0];
+            let y1 = rest[1];
+            let x2 = rest[2];
+            let y2 = rest[3];
             this._k = (y2 - y1) / (x2 - x1);
 
             if (this.isVertical) {
@@ -40,7 +40,7 @@ class Line {
         } else {
             throw new Error('arguments number invalid');
         }
-        this._range = [-999999999, 999999999];
+        this._range = [-9999, 9999];
     }
 
     get k() {
@@ -57,6 +57,21 @@ class Line {
 
     get range() {
         return this._range;
+    }
+
+    clone() {
+        if (this._k === Infinity) {
+            return new Line(this._x);
+        }
+        return new Line(this._k, this._b);
+    }
+
+    toString() {
+        if (this._k === Infinity) {
+            return `[Line (x=${this._x})]`;
+        } else {
+            return `[Line (k="${this._k}" b="${this._b}" )]`;
+        }
     }
 
     /**
@@ -108,7 +123,7 @@ class Line {
      * @returns {boolean}
      */
     isPointInLine(x, y) {
-        if (arguments.length === 1 && x instanceof Point) {
+        if (arguments._length === 1 && x instanceof Point) {
             y = x._y;
             x = x._x;
         }

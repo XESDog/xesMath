@@ -209,7 +209,7 @@ define(function () {
         var i = 0;
         context.beginPath();
         context.moveTo(points[0], points[1]);
-        while (i < points.length) {
+        while (i < points._length) {
             context.lineTo(points[i], points[i + 1]);
             i += 2;
         }

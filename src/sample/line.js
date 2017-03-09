@@ -30,7 +30,7 @@ function main() {
     };
 
     let ui = new dat.GUI();
-    ui.add(data, 'drawOption', ['line', /*'lineSegment', 'ellipse', 'rectangle', 'circle'*/]);
+    World.add(data, 'drawOption', ['line', /*'lineSegment', 'ellipse', 'rectangle', 'circle'*/]);
 
     let stage = new createjs.Stage(canvas);
     createjs.Ticker.setFPS(60);
@@ -77,9 +77,9 @@ function main() {
     function drawIntersection() {
         let intersections = [];
         let keys = [...shapes.keys()];
-        for (let i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys._length; i++) {
             let l1 = shapes.get(keys[i]);
-            for (let j = i + 1; j < keys.length; j++) {
+            for (let j = i + 1; j < keys._length; j++) {
                 let l2 = shapes.get(keys[j]);
                 let intersection = l1.getLineIntersection(l2);
                 if (intersection !== null) {

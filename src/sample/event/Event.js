@@ -1,13 +1,9 @@
-class ChangePositionEvent extends createjs.Event {
-    constructor(type, v) {
+class UpdateEvent extends createjs.Event {
+    constructor(data) {
         super();
-
-        this.type = type;
-        this.v = v;
+        this.type = 'update';
+        this.data = data;
     }
 }
-ChangePositionEvent.BEGIN = Symbol('begin');
-ChangePositionEvent.ING = Symbol('ing');
-ChangePositionEvent.END = Symbol('end');
 
-export {ChangePositionEvent}
+export {UpdateEvent}

@@ -24,7 +24,11 @@ class LineSegment extends Line {
     }
 
     get length() {
-        return new Vector().subVectors(this._p1, this._p2).length;
+        return new Vector().subVectors(this._p1, this._p2)._length;
+    }
+
+    clone() {
+        return new LineSegment(this._p1.x, this._p1.y, this._p2.x, this._p2, y);
     }
 
     /**
@@ -61,6 +65,10 @@ class LineSegment extends Line {
 
     toVector() {
         return Vector.subVectors(this._p2, this._p1);
+    }
+
+    toString() {
+        return `[LineSegment (p1.x="${this._p1.x}" p1.y="${this._p1.y}" p2.x="${this._p2.x}" p2.y="${this._p2.y}")]`;
     }
 }
 export {LineSegment};

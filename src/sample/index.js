@@ -2,8 +2,12 @@
  * Created by work on 2017/3/7.
  */
 
+import styleCSS from '../style/style.css'
 import {DrawManager} from "./manager/DrawManager";
 import {World} from "./ui/World";
+
+// import createjs from '../../lib/createjs-2015.11.26.min';
+// import dat from '../../lib/dat.gui.min';
 
 function main() {
     let data = {
@@ -25,3 +29,4 @@ function main() {
     createjs.Ticker.setFPS(60);
 }
 main();
+

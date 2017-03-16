@@ -47,12 +47,12 @@ class Distance {
      * 点到线段的距离
      * @param p
      * @param ls
-     * @returns {number}
+     * @returns {{intersection, distance: number}}
      */
     static pointToLineSegment(p, ls) {
         //点是否在线段上
         if (ls.isPointInLineSegment) {
-            return 0;
+            return {intersection: p.clone(), distance: 0};
         } else {
             //根据r值来判断P点在AB上的投影是否在线段上
             let AB = ls.toVector();
@@ -60,12 +60,21 @@ class Distance {
             let len = ls._length;
             let r = AP.dot(AB) / (len * len);
             if (r >= 1) {
-                return Distance.pointToPoint(p, ls._p2);
+                return {
+                    intersection: ls.p2.clone(),
+                    distance: Distance.pointToPoint(p, ls.p2)
+                };
             } else if (r <= 0) {
-                return Distance.pointToPoint(p, ls._p1);
+                return {
+                    intersection: ls.p1.clone(),
+                    distance: Distance.pointToPoint(p, ls.p1)
+                };
             } else {
-                let intersection = ls._p1.toVector().lerp(ls._p2.toVector(), r);
-                return Distance.pointToPoint(p, intersection);
+                let intersection = ls.p1.toVector().lerp(ls.p2.toVector(), r);
+                return {
+                    intersection: intersection,
+                    distance: Distance.pointToPoint(p, intersection),
+                };
             }
         }
     };

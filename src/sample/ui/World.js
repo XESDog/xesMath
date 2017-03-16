@@ -97,6 +97,11 @@ function getDistance(a, b) {
             endP = b;
             return {startP: startP, endP: endP};
         }
+        if ((isClass(a, "Point") || isClass(a, 'Vector')) && isClass('LineSegment')) {
+            startP = a;
+            endP = Distance.pointToLineSegment(a, b).intersection;
+            return {startP: startP, endP: endP};
+        }
     };
     if (a.constructor.name === b.constructor.name) {
         return fun(a, b);
@@ -160,7 +165,6 @@ class World {
         }
 
         if (ps.length > 0) {
-            console.log(ps.length);
             drawIntersections(ps);
         }
         if (ds.length > 0) {

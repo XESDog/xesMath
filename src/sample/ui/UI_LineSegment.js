@@ -10,8 +10,8 @@ class UI_LineSegment extends createjs.Container {
 
         this._dragManager = null;
 
-        this._dotA = new UI_Point(new Vector(0, 0),);
-        this._dotB = new UI_Point(new Vector(0, 0),);
+        this._dotA = new UI_Point(new Vector(0, 0));
+        this._dotB = new UI_Point(new Vector(0, 0));
         this._line = new createjs.Shape();
         this._dotC = new UI_Point(new Vector(0, 0), {radius: 4, avatar: 1});
 

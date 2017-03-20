@@ -4,7 +4,8 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const htmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -20,10 +21,11 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             names: ['coniferCone', 'manifest']
         }),
-        new htmlWebpackPlugin({
+        new HtmlWebpackPlugin({
             filename: './sample/index.html',
             template: './src/sample/index-template.html'
         }),
+        // new ExtractTextWebpackPlugin('style.css'),
     ],
     module: {
         rules: [
@@ -43,7 +45,10 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
-            }
+                // use: ExtractTextWebpackPlugin.extract({
+                //     use: 'css-loader'
+                // })
+            },
         ],
     },
 

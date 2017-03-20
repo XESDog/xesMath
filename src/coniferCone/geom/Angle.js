@@ -3,31 +3,17 @@ class Angle {
      * 限定角度范围在 0~360，弧度范围限定在0~2π
      * @param degree
      * @param isDegree
-     * @returns {*}
+     * @returns {number}
      */
     static normal(degree = 0, isDegree = true) {
         //弧度
         if (isDegree) {
-            while (degree >= 360) {
-                degree -= 360;
-            }
-            while (degree < 0) {
-                degree += 360;
-            }
-            return degree;
+            return (degree %= 360) < 0 ? degree + 360 : degree;
         }
         //角度
         else {
-            let angle = degree;
-            while (angle >= Angle.PI2) {
-                angle -= Angle.PI2;
-            }
-            while (angle < 0) {
-                angle += Angle.PI2;
-            }
-            return angle;
+            return (degree %= Angle.PI2) < 0 ? degree + Angle.PI2 : degree;
         }
-
     }
 
     /**
@@ -37,8 +23,8 @@ class Angle {
      *
      */
     constructor(degree = 0, isDegree = true) {
-        this._degree=0;
-        this._angle=0;
+        this._degree = 0;
+        this._angle = 0;
 
 
         if (isDegree) {
@@ -47,7 +33,8 @@ class Angle {
             this.angle = degree;
         }
     }
-    clone(){
+
+    clone() {
         return new Angle(this._degree);
     }
 
@@ -82,7 +69,7 @@ class Angle {
      * @returns {boolean}
      */
     get isRight() {
-        return this._degree === 90 || this._degree === 270;
+        return (this._degree % 90) === 0;
     }
 
     /**
@@ -99,14 +86,7 @@ class Angle {
      */
     get acute() {
         let a = this._degree;
-        while (a > 90) {
-            a -= 180;
-        }
-
-        while (a < -90) {
-            a += 180;
-        }
-        return a >= 0 ? a : -a;
+        return (a %= 90) < 0 ? -a : a;
     }
 
     /**
@@ -116,7 +96,8 @@ class Angle {
     get obtuse() {
         return 180 - this.acute;
     }
-    toString(){
+
+    toString() {
         return `[Angle (degree="${this._degree}" angle="${this._angle}")]`;
     }
 

@@ -4,17 +4,16 @@
 
 import {Point} from "./Point";
 import {Angle} from "./Angle";
-import {Intersection} from "../util/Intersection";
 class Line {
     constructor(...rest) {
-        this._k;
-        this._b;
-        this._x;
-        this._range;
+        this._k = 0;
+        this._b = 0;
+        this._x = 0;
+        this._range = [];
 
         //垂直于x轴
         if (rest.length === 1) {
-            this._x = arguments[0];
+            this._x = rest[0];
             this._k = Infinity;
         }
         //k,b
@@ -123,7 +122,7 @@ class Line {
      * @returns {boolean}
      */
     isPointInLine(x, y) {
-        if (arguments._length === 1 && x instanceof Point) {
+        if (arguments.length === 1 && x instanceof Point) {
             y = x._y;
             x = x._x;
         }
@@ -137,8 +136,24 @@ class Line {
      * 获取和另外一条直线的交点
      * @param l
      */
-    getLineIntersection(l) {
-        return Intersection.lineToLine(this, l);
+    getIntersectionWithLine(l) {
+        //平行
+        if (this.k === l.k) {
+            return null;
+        }
+        //两条线中有一条垂直
+        else if (this.isVertical || l.isVertical) {
+            return new Point(this.isVertical ? this._x : l._x
+                , this.isVertical ? l.k * this._x + l.b : this.k * l._x + this.b);
+        }
+        else {
+            const k1 = this.k;
+            const b1 = this.b;
+            const k2 = l.k;
+            const b2 = l.b;
+            const x = (b2 - b1) / (k1 - k2);
+            return new Point(x, k1 * x + b1);
+        }
     }
 
     /**
@@ -166,7 +181,7 @@ class Line {
     getVerticalIntersection(x, y) {
         if (this.isPointInLine(x, y))return new Point(x, y);
         let verticalLine = this.getVerticalLine(x, y);
-        return this.getLineIntersection(verticalLine);
+        return this.getIntersectionWithLine(verticalLine);
     }
 
     /**
@@ -187,6 +202,22 @@ class Line {
 
         return new Point(x - A * temp, y - B * temp);
 
+    }
+
+    /**
+     * 获取两条直线之间的距离，如果相交返回0
+     * @param l
+     * @returns {number}
+     */
+    getDistanceWithLine(l) {
+        if (this.k === l.k) {
+            if (this.k === Infinity) {
+                return Math.abs(this.x - l.x);
+            } else {
+                return Math.cos(Math.atan(this.k)) * Math.abs(this.b - l.b);
+            }
+        }
+        return 0;
     }
 
     /**

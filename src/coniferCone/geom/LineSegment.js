@@ -32,39 +32,59 @@ class LineSegment extends Line {
     }
 
     /**
-     * 点到线段的距离
-     * @param x
-     * @param y
-     */
-    getDistanceFromPoint(x, y) {
-
-
-    }
-
-    /**
      * 是否点在线段上
      * @param x
      * @param y
      */
     isPointInLineSegment(x, y) {
-        let p = new Vector(x, y);
-        let p_p1 = Vector.subVectors(this._p1, p);
-        let p_p2 = Vector.subVectors(this._p2, p);
+        //是否在直线上
+        if (this.toLine().isPointInLine(x, y)) {
+            //是否在线段形成的矩形区域
+            if (((x <= this.p1.x && x >= this.p2.x) || (x <= this.p2.x && x >= this.p1.x))
+                && (y <= this.p1.y && y >= this.p2.y) || (y <= this.p2.y && y >= this.p1.y)) {
+                //同时满足"在直线上"和"在线段形成的矩形区域"则该点在线段上
+                return true;
+            }
+        }
+        return false;
+    }
 
-        //todo:点是线段的两个端点的情况没考虑
-        return p_p1.angleTo(p_p2) === Math.PI;
+
+    /**
+     * 是否和线段ls相交
+     * @param ls
+     */
+    isIntersectWithLineSegment(ls) {
+        let p = this.toLine().getIntersectionWithLine(ls.toLine());
+        return !!(p && this.isPointInLineSegment(p.x, p.y) && ls.isPointInLineSegment(p.x, p.y));
     }
 
     /**
      * 线段到线段的距离
      * @param l
      */
-    getDistanceFromLineSegment(l) {
+    getDistanceWithLineSegment(l) {
+        if (this.isIntersectWithLineSegment(l)) {
+            return 0;
+        } else {
+//todo
+        }
+    }
 
+    toLine() {
+        return new Line(this._p1.x, this._p1.y, this._p2.x, this._p2.y);
     }
 
     toVector() {
         return Vector.subVectors(this._p2, this._p1);
+    }
+
+    toRectangle() {
+        let x = Math.min(this.p1.x, this.p2.x);
+        let y = Math.min(this.p1.y, this.p2.y);
+        let w = Math.abs(this.p1.x - this.p2.x);
+        let h = Math.abs(this.p1.y - this.p2.y);
+        return new Rectangle(x, y, w, h);
     }
 
     toString() {

@@ -1,7 +1,6 @@
 /**
  * Created by work on 2017/2/21.
  */
-import {Distance} from "../util/Distance";
 import {Vector} from "./Vector";
 
 class Point {
@@ -35,7 +34,9 @@ class Point {
      * @returns {number}
      */
     distance(p) {
-        return Distance.pointToPoint(this, p);
+        let w = this.x - p.x;
+        let h = this.y - p.y;
+        return Math.sqrt(w * w + h * h);
     }
 
     /**

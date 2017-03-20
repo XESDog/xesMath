@@ -1,11 +1,17 @@
 /**
  * Created by work on 2017/2/16.
  */
+
+
+import {Point} from "./Point";
+import {Angle} from "./Angle";
 class Circle {
-    constructor(x, y, radius) {
+    constructor(x, y, radius, step = 0.1) {
         this._x = x;
         this._y = y;
-        this._radius = radius
+        this._radius = radius;
+        this._step = Angle.PI2 / parseInt(Angle.PI2 / step);
+
     }
 
     setValues(x, y, radius) {
@@ -25,6 +31,32 @@ class Circle {
 
     get radius() {
         return this._radius;
+    }
+
+    get center() {
+        return new Point(this._x, this._y);
+    }
+
+    get points() {
+        let i = 0, ps = [];
+        while (i <= Angle.PI2) {
+            ps.push(this.getPoint(i));
+            i += this._step;
+        }
+        ps.push(this.getPoint(0));//形成封闭环
+        return ps;
+    }
+
+    getPoint(angle=0) {
+        let x = Math.cos(angle) * this._radius + this._x;
+        let y = Math.sin(angle) * this._radius + this._y;
+        return new Point(x, y);
+    }
+
+    contains(x, y) {
+        let p = new Point(x, y);
+        let d = p.distance(this.center);
+        return d <= this._radius;
     }
 
     /**
@@ -51,9 +83,10 @@ class Circle {
         return 2 * this._radius;
     }
 
-    clone(){
+    clone() {
         return new Circle(this._x, this._y, this._radius);
     }
+
     toString() {
         return "[Circle (radius=" + this._radius + " circumference=" + this.circumference + " area=" + this.area + ")]";
     }

@@ -6,13 +6,14 @@ import {Line} from "../../coniferCone/geom/Line";
 import {LineSegment} from "../../coniferCone/geom/LineSegment";
 import {Distance} from "../../coniferCone/util/Distance";
 
-const displayToData = new Map();
+//key:display,value={data:object,updateEventID:string}
+const display_data = new Map();
 let stage = null;
-//显示对象
+//显示对象容器
 let objs = new createjs.Container();
-//交点
+//交点集合
 let intersections = new createjs.Shape();
-//距离
+//距离集合
 let distances = new createjs.Shape();
 
 
@@ -20,13 +21,20 @@ function isClass(instance, name) {
     return instance.constructor.name === name;
 }
 
+function clearIntersections() {
+    let g = intersections.graphics;
+    g.clear();
+}
+function clearDistances() {
+    let g = distances.graphics;
+    g.clear();
+}
 /**
  * 绘制所有交点
  * @param ps
  */
 function drawIntersections(ps) {
     let g = intersections.graphics;
-    g.clear();
     ps.forEach(value => {
         g.setStrokeStyle(1);
         g.beginStroke('#0f0');
@@ -39,7 +47,6 @@ function drawIntersections(ps) {
  */
 function drawDistances(ds) {
     let g = distances.graphics;
-    g.clear();
     ds.forEach(value => {
         let {startP, endP} = value;
         g.setStrokeStyle(1);
@@ -66,14 +73,22 @@ function getIntersection(a, b) {
         if (isClass(a, 'LineSegment') && isClass(b, 'LineSegment')) {
             return Intersection.lineSegmentToLineSegment(a, b);
         }
+        return null;
+
+    };
+    let fun2 = function (a, b) {
+        if (isClass(a, 'Line') && isClass(b, 'LineSegment')) {
+            return Intersection.lineToLineSegment(a, b);
+        }
+        return null;
     };
 
     if (a.constructor.name === b.constructor.name) {
         return fun(a, b);
     } else {
-        let result = fun(a, b);
+        let result = fun2(a, b);
         if (!result) {
-            result = fun(b, a);
+            result = fun2(b, a);
         }
         return result;
     }
@@ -117,10 +132,6 @@ function getDistance(a, b) {
 
 
 class World {
-    constructor() {
-
-    }
-
     static init(st) {
         stage = st;
         stage.on('tick', World.update);
@@ -133,26 +144,27 @@ class World {
     static add(display, data) {
         objs.addChild(display);
         let updateEventID = display.on('update', e => {
-            displayToData.set(display, {data: e.data, updateEventID: updateEventID});
+            display_data.set(display, {data: e.data, updateEventID: updateEventID});
         });
-        displayToData.set(display, {data: data})
+        display_data.set(display, {data: data})
     }
 
     static remove(display) {
         objs.removeChild(display);
-        display.off('update', displayToData.get(display).updateEventID);
-        displayToData.delete(display);
+        display.off('update', display_data.get(display).updateEventID);
+        display_data.delete(display);
     }
 
     static update() {
-        displayToData.forEach((value, key) => {
+        display_data.forEach((value, key) => {
             key.update(value.data);
         });
 
-        let arr = [...displayToData];
+        let arr = [...display_data];
         let len = arr.length;
         let ps = [];//交点
         let ds = [];//距离
+
         for (let i = 0; i < len; i++) {
             let [, {data: dataA}] = arr[i];
             for (let j = i + 1; j < len; j++) {
@@ -164,6 +176,9 @@ class World {
             }
         }
 
+        clearIntersections();
+        clearDistances();
+
         if (ps.length > 0) {
             drawIntersections(ps);
         }
@@ -171,7 +186,5 @@ class World {
             drawDistances(ds);
         }
     }
-
-
 }
 export {World}

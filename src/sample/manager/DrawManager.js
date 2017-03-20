@@ -5,6 +5,8 @@ import {UI_Point} from "../ui/UI_Point";
 import {UI_LineSegment} from "../ui/UI_LineSegment";
 import {UI_Line} from "../ui/UI_Line";
 import {World} from "../ui/World";
+import {UI_Circle} from "../ui/UI_Circle";
+import {Circle} from "../../coniferCone/geom/Circle";
 class DrawManager {
     constructor(stage) {
         this.stage = stage;
@@ -18,6 +20,7 @@ class DrawManager {
         this.optionMap.set('point', [this.drawingPoint, this.drawPoint]);
         this.optionMap.set('line', [this.drawingLine, this.drawLine]);
         this.optionMap.set('lineSegment', [this.drawingLineSegment, this.drawLineSegment]);
+        this.optionMap.set('circle', [this.drawingCircle, this.drawCircle]);
 
         this.stage.on('stagemousedown', this.onMouseDown, this);
 
@@ -69,7 +72,7 @@ class DrawManager {
             let l = new Line(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
             let line = new UI_Line(l);
             World.add(line, l);
-            this.currentObject=line;
+            this.currentObject = line;
         } else {
             this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
         }
@@ -84,13 +87,30 @@ class DrawManager {
     drawingLineSegment() {
         if (this.currentObject === null) {
             this.currentObject = new UI_LineSegment();
-            World.add(this.currentObject,new LineSegment(this.startP.x, this.startP.y, this.endP.x, this.endP.y))
+            World.add(this.currentObject, new LineSegment(this.startP.x, this.startP.y, this.endP.x, this.endP.y))
         } else {
             this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
         }
     }
 
     drawLineSegment() {
+        if (this.currentObject !== null) {
+            this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
+        }
+    }
+    drawingCircle(){
+        if(this.currentObject===null){
+            this.currentObject = new UI_Circle();
+
+            let center = Vector.lerpVectors(this.startP, this.endP, 0.5);
+            let radius = Vector.subVectors(this.startP, this.endP).length / 5;
+            World.add(this.currentObject, new Circle(center.x, center.y, radius));
+
+        }else{
+            this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
+        }
+    }
+    drawCircle(){
         if (this.currentObject !== null) {
             this.currentObject.dispatchUpdateEvent(this.startP.x, this.startP.y, this.endP.x, this.endP.y);
         }

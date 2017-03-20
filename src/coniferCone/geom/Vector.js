@@ -344,7 +344,11 @@ class Vector {
      * @returns {number}
      */
     angleTo(v) {
-        let cos = this.dot(v) / (this._length * v._length);
+        let cos = this.dot(v) / (this.length * v.length);
+        //纠正偏差，cos的取值范围为[-1,1]
+        if (cos < -1) cos = -1;
+        if (cos > 1) cos = 1;
+
         return Math.acos(cos);//0~π
     }
 

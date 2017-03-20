@@ -21,7 +21,7 @@ function main() {
 
     World.init(stage);
 
-    ui.add(data, 'option', ['point', 'line', 'lineSegment']).onChange(function (value) {
+    ui.add(data, 'option', ['point', 'line', 'lineSegment','circle']).onChange(function (value) {
         drawManager.option = value;
     });
 

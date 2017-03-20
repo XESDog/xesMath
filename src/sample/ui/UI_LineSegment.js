@@ -3,6 +3,8 @@ import {Vector} from "../../coniferCone/geom/Vector";
 import {LineSegment} from "../../coniferCone/geom/LineSegment";
 import {DragManager} from "../manager/DragManager";
 import {UpdateEvent} from "../event/Event";
+
+
 class UI_LineSegment extends createjs.Container {
 
     constructor({} = {}) {
@@ -10,16 +12,15 @@ class UI_LineSegment extends createjs.Container {
 
         this._dragManager = null;
 
-        this._dotA = new UI_Point(new Vector(0, 0));
-        this._dotB = new UI_Point(new Vector(0, 0));
+        this._dotA = new UI_Point();
+        this._dotB = new UI_Point();
         this._line = new createjs.Shape();
-        this._dotC = new UI_Point(new Vector(0, 0), {radius: 4, avatar: 1});
+        this._dotC = new UI_Point({radius: 4, avatar: 1});
 
         this.addChild(this._line);
         this.addChild(this._dotA);
         this.addChild(this._dotB);
         this.addChild(this._dotC);
-
 
         this.on('added', this.onAdded, this);
     }
@@ -56,8 +57,8 @@ class UI_LineSegment extends createjs.Container {
         g.lineTo(this._dotB.x, this._dotB.y);
     }
 
-    dispatchUpdateEvent(x1,y1,x2,y2) {
-        let ls=new LineSegment(x1,y1,x2,y2)
+    dispatchUpdateEvent(x1, y1, x2, y2) {
+        let ls = new LineSegment(x1, y1, x2, y2)
         let e = new UpdateEvent(ls);
         this.dispatchEvent(e);
     }

@@ -33,6 +33,14 @@ class Distance {
     }
 
     /**
+     *
+     * @param c
+     */
+    static pointToCircle(c){
+
+    }
+
+    /**
      * 两条线段之间的距离
      * @param ls1
      * @param ls2

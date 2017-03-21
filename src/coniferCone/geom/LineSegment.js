@@ -4,6 +4,8 @@
 
 import {Line} from "./Line";
 import {Vector} from "./Vector";
+import {Rectangle} from "../geom/Rectangle";
+
 class LineSegment extends Line {
     constructor(x1, y1, x2, y2) {
         let k = Math.tan((y2 - y1) / (x2 - x1));
@@ -40,9 +42,10 @@ class LineSegment extends Line {
         //是否在直线上
         if (this.toLine().isPointInLine(x, y)) {
             //是否在线段形成的矩形区域
-            if (((x <= this.p1.x && x >= this.p2.x) || (x <= this.p2.x && x >= this.p1.x))
-                && (y <= this.p1.y && y >= this.p2.y) || (y <= this.p2.y && y >= this.p1.y)) {
-                //同时满足"在直线上"和"在线段形成的矩形区域"则该点在线段上
+            // if (((x <= this.p1.x && x >= this.p2.x) || (x <= this.p2.x && x >= this.p1.x))
+            //     && (y <= this.p1.y && y >= this.p2.y) || (y <= this.p2.y && y >= this.p1.y)) {
+            //同时满足"在直线上"和"在线段形成的矩形区域"则该点在线段上
+            if (this.toRectangle().contains(x, y)) {
                 return true;
             }
         }

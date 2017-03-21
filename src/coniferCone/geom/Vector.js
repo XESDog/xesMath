@@ -453,6 +453,27 @@ class Vector {
     toString() {
         return "[Vector2 (x=" + this._x + " y=" + this._y + ")]";
     }
+
+
 }
+let zero = new Vector();
+Vector.ZERO = new Proxy(zero, {
+    set: function (target, property) {
+
+    },
+    setPrototypeOf: function () {
+
+    },
+    apply: function () {
+
+    },
+    constructor: function () {
+
+    },
+    deleteProperty: function () {
+
+    },
+
+});
 
 export {Vector};

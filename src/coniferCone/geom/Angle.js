@@ -105,5 +105,6 @@ class Angle {
 Angle.DEGREE_TO_ANGLE = Math.PI / 180;
 Angle.ANGLE_TO_DEGREE = 180 / Math.PI;
 Angle.PI2 = Math.PI * 2;
+Angle.PI_HALF = Math.PI / 2;
 
 export {Angle}

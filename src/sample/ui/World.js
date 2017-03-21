@@ -73,6 +73,9 @@ function getIntersection(a, b) {
         if (isClass(a, 'LineSegment') && isClass(b, 'LineSegment')) {
             return Intersection.lineSegmentToLineSegment(a, b);
         }
+        if (isClass(a, 'Circle') && isClass(b, 'Circle')) {
+            return Intersection.circleToCircle(a, b);
+        }
         return null;
 
     };
@@ -80,8 +83,12 @@ function getIntersection(a, b) {
         if (isClass(a, 'Line') && isClass(b, 'LineSegment')) {
             return Intersection.lineToLineSegment(a, b);
         }
+        if(isClass(a,'Line')&&isClass(b,'Circle')){
+            return Intersection.lineToCircle(a, b);
+        }
         return null;
     };
+
 
     if (a.constructor.name === b.constructor.name) {
         return fun(a, b);
@@ -115,6 +122,11 @@ function getDistance(a, b) {
         if ((isClass(a, "Point") || isClass(a, 'Vector')) && isClass('LineSegment')) {
             startP = a;
             endP = Distance.pointToLineSegment(a, b).intersection;
+            return {startP: startP, endP: endP};
+        }
+        if (isClass(a, 'Circle') && isClass(b, 'Circle')) {
+            startP = a.center;
+            endP = b.center;
             return {startP: startP, endP: endP};
         }
     };
@@ -171,7 +183,13 @@ class World {
                 let [, {data: dataB}] = arr[j];
                 let p = getIntersection(dataA, dataB);
                 let d = getDistance(dataA, dataB);
-                if (!!p) ps.push(p);
+                if (!!p) {
+                    if (p instanceof Array) {
+                        ps = ps.concat(p);
+                    } else {
+                        ps.push(p);
+                    }
+                }
                 if (!!d) ds.push(d);
             }
         }

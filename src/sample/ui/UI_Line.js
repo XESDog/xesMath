@@ -28,9 +28,9 @@ class UI_Line extends createjs.Container {
     update(l) {
         this._l = l;
         let points = this._l.points;
-        let center = Vector.lerpVectors(points[0].toVector(), points[1].toVector(), 0.5);
-        let p1 = Vector.subVectors(points[0].toVector(), center);
-        let p2 = Vector.subVectors(points[1].toVector(), center);
+        let center = Vector.lerpVectors(points[0], points[1], 0.5);
+        let p1 = Vector.subVectors(points[0], center);
+        let p2 = Vector.subVectors(points[1], center);
         this.x = center.x;
         this.y = center.y;
 

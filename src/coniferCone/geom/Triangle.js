@@ -1,13 +1,12 @@
-import {Point} from "./Point";
 import {Vector} from "./Vector";
 class Triangle {
     constructor(x1, y1, x2, y2, x3, y3) {
         //A
-        this._p1 = new Point(x1, y1);
+        this._p1 = new Vector(x1, y1);
         //B
-        this._p2 = new Point(x2, y2);
+        this._p2 = new Vector(x2, y2);
         //C
-        this._p3 = new Point(x3, y3);
+        this._p3 = new Vector(x3, y3);
     }
 
     get p3() {

@@ -2,8 +2,9 @@
  * Created by work on 2017/2/16.
  */
 
-import {Point} from "./Point";
 import {Angle} from "./Angle";
+import {Vector} from "./Vector";
+
 class Line {
     constructor(...rest) {
         this._k = 0;
@@ -80,16 +81,16 @@ class Line {
     get points() {
         let p;
         if (this.isVertical) {
-            p = [new Point(this._x, this._range[0])
-                , new Point(this._x, this._range[1])];
+            p = [new Vector(this._x, this._range[0])
+                , new Vector(this._x, this._range[1])];
         }
         else if (this.isHorizontal) {
-            p = [new Point(this._range[0], this._b)
-                , new Point(this._range[1], this._b)];
+            p = [new Vector(this._range[0], this._b)
+                , new Vector(this._range[1], this._b)];
         }
         else {
-            p = [new Point(this._range[0], this._k * this._range[0] + this._b)
-                , new Point(this._range[1], this._k * this._range[1] + this._b)];
+            p = [new Vector(this._range[0], this._k * this._range[0] + this._b)
+                , new Vector(this._range[1], this._k * this._range[1] + this._b)];
         }
         return p;
     }
@@ -122,7 +123,7 @@ class Line {
      * @returns {boolean}
      */
     isPointInLine(x, y) {
-        if (arguments.length === 1 && x instanceof Point) {
+        if (arguments.length === 1 && x instanceof Vector) {
             y = x._y;
             x = x._x;
         }
@@ -143,7 +144,7 @@ class Line {
         }
         //两条线中有一条垂直
         else if (this.isVertical || l.isVertical) {
-            return new Point(this.isVertical ? this._x : l._x
+            return new Vector(this.isVertical ? this._x : l._x
                 , this.isVertical ? l.k * this._x + l.b : this.k * l._x + this.b);
         }
         else {
@@ -152,7 +153,7 @@ class Line {
             const k2 = l.k;
             const b2 = l.b;
             const x = (b2 - b1) / (k1 - k2);
-            return new Point(x, k1 * x + b1);
+            return new Vector(x, k1 * x + b1);
         }
     }
 
@@ -179,7 +180,7 @@ class Line {
      * @returns {*}
      */
     getVerticalIntersection(x, y) {
-        if (this.isPointInLine(x, y))return new Point(x, y);
+        if (this.isPointInLine(x, y))return new Vector(x, y);
         let verticalLine = this.getVerticalLine(x, y);
         return this.getIntersectionWithLine(verticalLine);
     }
@@ -192,7 +193,7 @@ class Line {
      */
     getSymmetryPoint(x, y) {
 
-        if (this.isPointInLine(x, y))return new Point(x, y);
+        if (this.isPointInLine(x, y))return new Vector(x, y);
 
         //换算成一般式
         const A = this._k;
@@ -200,7 +201,7 @@ class Line {
         const C = this._b;
         const temp = 2 * (A * x + B * y + C) / (A * A + B * B);
 
-        return new Point(x - A * temp, y - B * temp);
+        return new Vector(x - A * temp, y - B * temp);
 
     }
 

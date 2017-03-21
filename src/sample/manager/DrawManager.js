@@ -1,7 +1,6 @@
 import {Vector} from "../../coniferCone/geom/Vector";
 import {Line} from "../../coniferCone/geom/Line";
 import {LineSegment} from "../../coniferCone/geom/LineSegment";
-import {UI_Point} from "../ui/UI_Point";
 import {UI_LineSegment} from "../ui/UI_LineSegment";
 import {UI_Line} from "../ui/UI_Line";
 import {World} from "../ui/World";

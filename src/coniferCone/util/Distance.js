@@ -33,14 +33,6 @@ class Distance {
     }
 
     /**
-     *
-     * @param c
-     */
-    static pointToCircle(c){
-
-    }
-
-    /**
      * 两条线段之间的距离
      * @param ls1
      * @param ls2
@@ -64,13 +56,13 @@ class Distance {
         } else {
             //根据r值来判断P点在AB上的投影是否在线段上
             let AB = ls.toVector();
-            let AP = p.toVector().sub(ls._p1);
+            let AP = p.toVector().sub(ls._A);
             let len = ls._length;
             let r = AP.dot(AB) / (len * len);
             if (r >= 1) {
                 return {
-                    intersection: ls.p2.clone(),
-                    distance: Distance.pointToPoint(p, ls.p2)
+                    intersection: ls.B.clone(),
+                    distance: Distance.pointToPoint(p, ls.B)
                 };
             } else if (r <= 0) {
                 return {
@@ -78,7 +70,7 @@ class Distance {
                     distance: Distance.pointToPoint(p, ls.p1)
                 };
             } else {
-                let intersection = ls.p1.toVector().lerp(ls.p2.toVector(), r);
+                let intersection = ls.p1.toVector().lerp(ls.B.toVector(), r);
                 return {
                     intersection: intersection,
                     distance: Distance.pointToPoint(p, intersection),

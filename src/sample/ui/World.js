@@ -83,7 +83,7 @@ function getIntersection(a, b) {
         if (isClass(a, 'Line') && isClass(b, 'LineSegment')) {
             return Intersection.lineToLineSegment(a, b);
         }
-        if(isClass(a,'Line')&&isClass(b,'Circle')){
+        if (isClass(a, 'Line') && isClass(b, 'Circle')) {
             return Intersection.lineToCircle(a, b);
         }
         return null;
@@ -156,9 +156,12 @@ class World {
     static add(display, data) {
         objs.addChild(display);
         let updateEventID = display.on('update', e => {
-            display_data.set(display, {data: e.data, updateEventID: updateEventID});
+            if (display_data.has(e.target)) {
+                let obj = display_data.get(e.target);
+                obj.data = e.data;
+            }
         });
-        display_data.set(display, {data: data})
+        display_data.set(display, {data, updateEventID})
     }
 
     static remove(display) {

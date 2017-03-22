@@ -22,7 +22,7 @@ class UI_LineSegment extends createjs.Container {
         this.addChild(this._dotB);
         this.addChild(this._dotC);
 
-        this.on('added', this.onAdded, this);
+        // this.on('added', this.onAdded, this);
     }
 
     /**
@@ -30,19 +30,21 @@ class UI_LineSegment extends createjs.Container {
      * @param ls
      */
     update(ls) {
-        this._p1 = ls.p1;
-        this._p2 = ls.p2;
-        this._length = Vector.subVectors(this._p2, this._p1)._length;
+        this._ls = ls;
+        this._length = ls.toVector().length;
+
+        this.createDragManager();
+
         this.setPosition();
         this.drawLine();
     }
 
     setPosition() {
-        let center = Vector.lerpVectors(this._p2, this._p1, 0.5);
+        let center = Vector.lerpVectors(this._ls.B, this._ls.p1, 0.5);
         this.x = center.x;
         this.y = center.y;
-        this._dotA.update(Vector.subVectors(this._p1, center));
-        this._dotB.update(Vector.subVectors(this._p2, center));
+        this._dotA.update(Vector.subVectors(this._ls.p1, center));
+        this._dotB.update(Vector.subVectors(this._ls.B, center));
         this._dotC.update(new Vector());
     }
 
@@ -57,48 +59,63 @@ class UI_LineSegment extends createjs.Container {
         g.lineTo(this._dotB.x, this._dotB.y);
     }
 
-    dispatchUpdateEvent(x1, y1, x2, y2) {
-        let ls = new LineSegment(x1, y1, x2, y2)
+    dispatchUpdateEvent(startP, endP) {
+        let ls = new LineSegment(startP.x, startP.y, endP.x, endP.y);
         let e = new UpdateEvent(ls);
         this.dispatchEvent(e);
     }
 
-    onAdded() {
-        if (this._dragManager === null) {
-            this._dragManager = new DragManager(this.stage);
-            this._dragManager.register(this._dotA);
-            this._dragManager.register(this._dotB);
-            this._dragManager.register(this._dotC);
+    createDragManager() {
+        if (!!this._dragManager)return;
+        if (!this.stage)return;
+        if (!this._ls)return;
 
-            let self = this;
-            let originalA, originalB;
+        this._dragManager = new DragManager(this.stage);
+        this._dragManager.register(this._dotA);
+        this._dragManager.register(this._dotB);
+        this._dragManager.register(this._dotC);
 
-            this._dotA.onStartDrag = this._dotB.onStartDrag = this._dotC.onStartDrag = function () {
-                originalA = self._p1.clone();
-                originalB = self._p2.clone();
+        let self = this;
 
-            };
-            this._dotA.onEndDrag = this._dotB.onEndDrag = this._dotC.onEndDrag = function () {
-                self.dispatchUpdateEvent(self._p1.x, self._p1.y, self._p2.x, self._p2.y)
-
-            };
-
-            this._dotA.onDraging = this._dotB.onDraging = this._dotC.onDraging = function (originalP, offsetP) {
-
-                if (this === self._dotA) {
-                    self._p1 = Vector.addVectors(originalA, offsetP);
-                }
-                else if (this === self._dotB) {
-                    self._p2 = Vector.addVectors(originalB, offsetP);
-                }
-                else if (this === self._dotC) {
-                    self._p1 = Vector.addVectors(originalA, offsetP);
-                    self._p2 = Vector.addVectors(originalB, offsetP);
-                }
-
-                self.dispatchUpdateEvent(self._p1.x, self._p1.y, self._p2.x, self._p2.y)
-            }
+        this._dotA.onStartDrag = function () {
+            self._dragManager.setData(self._dotA, self._ls.p1)
+        };
+        this._dotB.onStartDrag = function () {
+            self._dragManager.setData(self._dotB, self._ls.B)
         }
+        this._dotC.onStartDrag = function () {
+            self._dragManager.setData(self._dotC, self._ls);
+        }
+        this._dotA.onEndDrag = this._dotB.onEndDrag = this._dotC.onEndDrag = function () {
+            self.dispatchUpdateEvent(self._ls.p1, self._ls.B);
+        };
+
+        this._dotA.onDraging = this._dotB.onDraging = this._dotC.onDraging = function (originalP, offsetP) {
+
+            if (this === self._dotA) {
+                let {x, y} = Vector.addVectors(originalP, offsetP);
+                self._ls.p1.setValues(x, y);
+            }
+            else if (this === self._dotB) {
+                let {x, y} = Vector.addVectors(originalP, offsetP);
+                self._ls.B.setValues(x, y);
+            }
+            else if (this === self._dotC) {
+
+                console.log(originalP);
+                let {x, y} = Vector.addVectors(originalP.p1, offsetP);
+                self._ls.p1.setValues(x, y);
+
+                ({x, y} = Vector.addVectors(originalP.B, offsetP));
+                self._ls.B.setValues(x, y);
+
+            }
+
+            self.dispatchUpdateEvent(self._ls.p1, self._ls.B);
+        }
+    }
+
+    onAdded() {
 
     }
 }

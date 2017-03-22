@@ -80,42 +80,38 @@ class Circle {
      * @returns {Vector|Array}
      */
     getIntersectionWithCircle(c) {
-        if (this.isIntersectWithCircle(c)) {
-            //以this._x,this._y为中心旋转c
-            let angle = Math.atan2(c.y - this._y, c.x - this._x);
-            let cNewCenter = c.center.clone();
-            cNewCenter.setValues(c.x - this._x, c.y - this._y);
-            cNewCenter.rotateAround(Vector.ZERO, -angle);
+        if (!this.isIntersectWithCircle(c))return null;
 
-            let r1 = this.radius;
-            let r2 = c.radius;
-            let d = Math.abs(cNewCenter.x);
-            let x = (d * d + r1 * r1 - r2 * r2) / (2 * d);
-            let y1 = Math.sqrt(r1 * r1 - x * x);
-            let y2 = -y1;
+        //以this._x,this._y为中心旋转c
+        let angle = Math.atan2(c.y - this._y, c.x - this._x);
+        let cNewCenter = c.center.clone();
+        cNewCenter.setValues(c.x - this._x, c.y - this._y);
+        cNewCenter.rotateAround(Vector.ZERO, -angle);
 
-            let ps;
-            if (y1 === y2) {
-                ps = new Vector(x, y1);
+        let [r1, r2, d] = [this.radius, c.radius, Math.abs(cNewCenter.x)];
+        let x = (d * d + r1 * r1 - r2 * r2) / (2 * d);
+        let y1 = Math.sqrt(r1 * r1 - x * x);
+        let y2 = -y1;
 
-            } else {
-                ps = [new Vector(x, y1), new Vector(x, y2)];
-            }
+        let ps;
+        if (y1 === y2) {
+            ps = new Vector(x, y1);
 
-            if (ps instanceof Array) {
-                ps.map((value) => {
-                    value.rotateAround(Vector.ZERO, angle);
-                    return value.setValues(value.x + this._x, value.y + this._y);
-                });
-                return ps;
-            } else {
-                ps.rotateAround(Vector.ZERO, angle);
-                ps.setValues(ps.x + this._x, ps.y + this._y);
-            }
-
-            return null;
+        } else {
+            ps = [new Vector(x, y1), new Vector(x, y2)];
         }
-        return null;
+
+        if (ps instanceof Array) {
+            ps.map((value) => {
+                value.rotateAround(Vector.ZERO, angle);
+                return value.setValues(value.x + this._x, value.y + this._y);
+            });
+        } else {
+            ps.rotateAround(Vector.ZERO, angle);
+            ps.setValues(ps.x + this._x, ps.y + this._y);
+        }
+
+        return ps;
     }
 
     /**

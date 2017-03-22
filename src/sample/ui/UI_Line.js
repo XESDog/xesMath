@@ -9,8 +9,8 @@ class UI_Line extends createjs.Container {
         super();
 
         //根据_l来得到两个控制点的坐标，通过两个控制点来调整_l的数据
-        this._p1 = null;
-        this._p2 = null;
+        this._A = null;
+        this._B = null;
         this._dragManager = null;
 
         this._dotA = new UI_Point();
@@ -46,8 +46,8 @@ class UI_Line extends createjs.Container {
 
     }
 
-    dispatchUpdateEvent(x1, y1, x2, y2) {
-        let ls = new Line(x1, y1, x2, y2);
+    dispatchUpdateEvent(startP, endP) {
+        let ls = new Line(startP.x, startP.y, endP.x, endP.y);
         let e = new UpdateEvent(ls);
         this.dispatchEvent(e);
     }

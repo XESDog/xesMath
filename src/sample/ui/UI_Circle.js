@@ -23,39 +23,43 @@ class UI_Circle extends UI_Shape {
         this.addChild(this._pointInEdge);
 
 
-        this.on('added', this.onAdded, this);
+        // this.on('added', this.onAdded, this);
     }
 
     onAdded(e) {
-        if (!!this._dragManager === false) {
-            this._dragManager = new DragManager(this.stage);
-            this._dragManager.register(this._center);
-            this._dragManager.register(this._pointInEdge);
+        // this.createDragManager();
 
-            let self = this;
-            let originalCenter;
-            let originalPointInEdge;
+    }
 
-            this._center.onStartDrag = function () {
-                originalCenter = self._c && self._c.center.clone();
-            };
-            this._center.onEndDrag = this._center.onDraging = function (originalP, offsetP) {
-                let center = Vector.addVectors(originalCenter, offsetP);
-                let c = new Circle(center.x, center.y, self._c.radius);
-                let e = new UpdateEvent(c);
-                self.dispatchEvent(e);
-            };
+    createDragManager() {
 
-            this._pointInEdge.onStartDrag = function () {
-                originalPointInEdge = self._c && self._c.getPoint(0).toVector()
-            };
-            this._pointInEdge.onDraging = this._pointInEdge.onEndDrag = function (originalP, offsetP) {
-                let centerToEdge = Vector.subVectors(originalPointInEdge, self._c.center);
-                let r = centerToEdge.add(offsetP).length;
-                let c = new Circle(self._c.x, self._c.y, r);
-                let e = new UpdateEvent(c);
-                self.dispatchEvent(e);
-            }
+        if (!!this._dragManager) return;
+        if (!this.stage)return;
+        if (!this._c)return;
+
+        this._dragManager = new DragManager(this.stage);
+        this._dragManager.register(this._center);
+        this._dragManager.register(this._pointInEdge);
+
+        let self = this;
+
+        this._center.onStartDrag = function () {
+            self._dragManager.setData(self._center, self._c.center.clone());
+        };
+        this._pointInEdge.onStartDrag = function () {
+            self._dragManager.setData(self._pointInEdge, self._c.getPoint(0));
+        };
+        this._center.onEndDrag = this._center.onDraging = function (originalP, offsetP) {
+            let center = Vector.addVectors(originalP, offsetP);
+            let c = new Circle(center.x, center.y, self._c.radius);
+            self.dispatchUpdateEvent(c);
+        };
+
+        this._pointInEdge.onDraging = this._pointInEdge.onEndDrag = function (originalP, offsetP) {
+            let centerToEdge = Vector.subVectors(originalP, self._c.center);
+            let r = centerToEdge.add(offsetP).length;
+            let c = new Circle(self._c.x, self._c.y, r);
+            self.dispatchUpdateEvent(c);
         }
     }
 
@@ -63,6 +67,8 @@ class UI_Circle extends UI_Shape {
         this.x = c.center.x;
         this.y = c.center.y;
         this._c = c;
+
+        this.createDragManager();
 
         let edgePoint = c.getPoint(0);
         this._pointInEdge.x = edgePoint.x - c.center.x;
@@ -84,19 +90,33 @@ class UI_Circle extends UI_Shape {
 
     }
 
-    dispatchUpdateEvent(x1, y1, x2, y2) {
-        let p1 = new Vector(x1, y1);
-        let p2 = new Vector(x2, y2);
-        let center = Vector.lerpVectors(p1, p2, 0.5);
-        let radius = Vector.subVectors(p1, p2).length / 2;
-        let c = new Circle(center.x, center.y, radius);
+    /**
+     * 如果传入1个参数，那么该参数是一个Circle对象
+     * @param startP
+     * @param endP
+     */
+    dispatchUpdateEvent(startP, endP) {
+        let p1, p2, center, radius, c;
+
+        if (arguments.length === 1) {
+            c = startP;
+        }
+        if (arguments.length === 2) {
+            p1 = startP.clone();
+            p2 = endP.clone();
+            center = Vector.lerpVectors(p1, p2, 0.5);
+            radius = Vector.subVectors(p1, p2).length / 2;
+            c = new Circle(center.x, center.y, radius);
+        }
+
+
         let e = new UpdateEvent(c);
         this.dispatchEvent(e);
 
     }
 
     destroy() {
-
+//todo
     }
 }
 export {UI_Circle}

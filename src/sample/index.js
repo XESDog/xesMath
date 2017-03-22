@@ -4,9 +4,7 @@
 
 import {DrawManager} from "./manager/DrawManager";
 import {World} from "./ui/World";
-
-// import createjs from '../../lib/createjs-2015.11.26.min';
-// import dat from '../../lib/dat.gui.min';
+import optionJson from "./option.json";
 
 function main() {
     let data = {
@@ -20,7 +18,7 @@ function main() {
 
     World.init(stage);
 
-    ui.add(data, 'option', ['point', 'line', 'lineSegment', 'circle']).onChange(function (value) {
+    ui.add(data, 'option', optionJson).onChange(function (value) {
         drawManager.option = value;
     });
 

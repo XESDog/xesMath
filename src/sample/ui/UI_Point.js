@@ -1,5 +1,5 @@
-import {DragManager} from "../manager/DragManager";
 import {Vector} from "../../coniferCone/geom/Vector";
+import {DragManager} from "../manager/DragManager";
 
 import {UpdateEvent} from "../event/Event";
 class UI_Point extends createjs.Shape {
@@ -14,6 +14,7 @@ class UI_Point extends createjs.Shape {
     constructor({
                     color = '#ABC',
                     radius = 6,
+                    //如果UI_Point在其他显示对象中，则不使用DragManager，由父对象处理
                     hasDragManager = false,
                     avatar = 0
                 } = {}) {
@@ -26,8 +27,6 @@ class UI_Point extends createjs.Shape {
         this._hasDragManager = hasDragManager;
 
         this._dragManager = null;
-        this._originalP;//p点的原始位置，每次执行拖拽之前修改
-
 
         let g = this.graphics;
         g.setStrokeStyle(1);
@@ -44,7 +43,11 @@ class UI_Point extends createjs.Shape {
     }
 
     onAdded() {
-        if (this._hasDragManager && this._dragManager === null) {
+        this.createDragManager();
+    }
+
+    createDragManager() {
+        if (this._hasDragManager && !this._dragManager && !!this.stage) {
             this._dragManager = new DragManager(this.stage);
             this._dragManager.register(this);
         }
@@ -57,15 +60,15 @@ class UI_Point extends createjs.Shape {
      *
      */
     onStartDrag() {
-        this._originalP = new Vector(this.x, this.y);
+        this._dragManager.setData(this, new Vector(this.x, this.y))
     }
 
     onDraging(originalP, offsetP) {
-        this.dispatchUpdateEvent(Vector.addVectors(this._originalP, offsetP));
+        this.dispatchUpdateEvent(Vector.addVectors(originalP, offsetP));
     }
 
     onEndDrag(originalP, offsetP) {
-        this.dispatchUpdateEvent(Vector.addVectors(this._originalP, offsetP));
+        this.dispatchUpdateEvent(Vector.addVectors(originalP, offsetP));
     }
 
     dispatchUpdateEvent(data) {

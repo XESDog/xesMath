@@ -6,31 +6,59 @@ import {Line} from "./Line";
 import {Vector} from "./Vector";
 import {Rectangle} from "../geom/Rectangle";
 
-class LineSegment extends Line {
-    constructor(x1, y1, x2, y2) {
-        let k = Math.tan((y2 - y1) / (x2 - x1));
-        let b = y1 - k * x1;
-        super(k, b);
+import {throwMissingParameterError} from "../error/Error";
 
-        this._p1 = new Vector(x1, y1);
-        this._p2 = new Vector(x2, y2);
+class LineSegment extends Line {
+    constructor(a = throwMissingParameterError(), b = throwMissingParameterError(), c, d) {
+
+        let x1, x2, y1, y2;
+        //两个点
+        if (arguments.length === 2) {
+            x1 = a.x;
+            y1 = a.y;
+            x2 = b.x;
+            y2 = b.y;
+        }
+        //4个坐标定义两个点
+        else if (arguments.length === 4) {
+            x1 = a;
+            y1 = b;
+            x2 = c;
+            y2 = d;
+        } else {
+            throw new Error('the number of parameters in the wrong!')
+        }
+
+        super(x1, y1, x2, y2);
+        this._A = new Vector(x1, y1);
+        this._B = new Vector(x2, y2);
         this._range = [Math.min(x1, x2), Math.max(x1, x2)];
+
     }
 
     get p1() {
-        return this._p1;
+        return this._A;
     }
 
     get p2() {
-        return this._p2;
+        return this._B;
     }
 
     get length() {
-        return new Vector().subVectors(this._p1, this._p2)._length;
+        return new Vector().subVectors(this._A, this._B)._length;
     }
 
     clone() {
-        return new LineSegment(this._p1.x, this._p1.y, this._p2.x, this._p2, y);
+        return new LineSegment(this._A.x, this._A.y, this._B.x, this._B, y);
+    }
+
+    /**
+     * 中垂线
+     */
+    get perpendicularBisector() {
+
+        let center = Vector.lerpVectors(this._A, this._B, 0.5);
+        return this.toLine().getVerticalLine(center.x, center.y);
     }
 
     /**
@@ -75,11 +103,11 @@ class LineSegment extends Line {
     }
 
     toLine() {
-        return new Line(this._p1.x, this._p1.y, this._p2.x, this._p2.y);
+        return new Line(this._A.x, this._A.y, this._B.x, this._B.y);
     }
 
     toVector() {
-        return Vector.subVectors(this._p2, this._p1);
+        return Vector.subVectors(this._B, this._A);
     }
 
     toRectangle() {
@@ -91,7 +119,7 @@ class LineSegment extends Line {
     }
 
     toString() {
-        return `[LineSegment (p1.x="${this._p1.x}" p1.y="${this._p1.y}" p2.x="${this._p2.x}" p2.y="${this._p2.y}")]`;
+        return `[LineSegment (p1.x="${this._A.x}" p1.y="${this._A.y}" p2.x="${this._B.x}" p2.y="${this._B.y}")]`;
     }
 }
 export {LineSegment};

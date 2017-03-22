@@ -1,70 +1,76 @@
 import {Vector} from "../../coniferCone/geom/Vector";
+
+function throwError() {
+    throw new Error('Missing parameter!');
+}
+
 class DragManager {
-    constructor(stage) {
+    constructor(stage = throwError()) {
         this.stage = stage;
         this.currentObject = null;
-        this.moveEventID = new Map();
-        this.mouseDownP = new Map();
-        this.originalP = new Map();
-        this.objs = new Set();
 
-        this.mouseDownID;
+        this.objs = new Map();
 
     }
 
-    register(displayObject) {
-        this.objs.add(displayObject);
-        this.mouseDownID = displayObject.on('mousedown', this.onMouseDown, this);
+    register(displayObject = throwError()) {
+
+        let mouseDownID = displayObject.on('mousedown', this.onMouseDown, this);
+        this.objs.set(displayObject, {mouseDownID});
     }
 
-    unregister(displayObject) {
-        displayObject.off('mousedown', this.mouseDownID);
+    setData(displayObject = throwError(), data) {
+        let obj;
+        if (this.objs.has(displayObject)) {
+            obj = this.objs.get(displayObject);
+            Object.assign(obj, {data});
+        }
+    }
+
+    unregister(displayObject = throwError()) {
+        let {mouseDownID} = this.objs.get(displayObject);
+        displayObject.off('mousedown', mouseDownID);
         this.objs.delete(displayObject);
     }
 
     onMouseDown(e) {
-        this.currentObjet = e.target;
+        this.currentObject = e.target;
 
-        let p = new Vector(e.stageX, e.stageY);
-        this.mouseDownP.set(this.currentObjet, new Vector(p.x, p.y));
-        this.originalP.set(this.currentObjet, new Vector(this.currentObjet.x, this.currentObjet.y));
-
+        let mouseDownP = new Vector(e.stageX, e.stageY);
+        let originalP = new Vector(this.currentObject.x, this.currentObject.y);
         let moveEventID = this.stage.on('stagemousemove', this.onMouseMove, this);
-        this.moveEventID.set(this.currentObjet, moveEventID);
+
+        this.objs.set(this.currentObject, {moveEventID, mouseDownP, originalP});
 
         this.stage.on('stagemouseup', this.onMouseUp, this, true);
 
-        if (Reflect.get(this.currentObjet, 'onStartDrag')) {
-            this.currentObjet.onStartDrag();
+        if (Reflect.get(this.currentObject, 'onStartDrag')) {
+            this.currentObject.onStartDrag();
         } else {
             this.defaultDownHandle();
         }
     }
 
     onMouseMove(e) {
-        let mouseDownP = this.mouseDownP.get(this.currentObjet);
         let moveP = new Vector(e.stageX, e.stageY);
+        let {mouseDownP, originalP, data} = this.objs.get(this.currentObject);
         let offsetP = Vector.subVectors(moveP, mouseDownP);
-        let originalP = this.originalP.get(this.currentObjet);
 
-        if (Reflect.get(this.currentObjet, 'onDraging')) {
-            this.currentObjet.onDraging(originalP, offsetP);
+        if (Reflect.get(this.currentObject, 'onDraging')) {
+            this.currentObject.onDraging(data, offsetP);
         } else {
             this.defaultMoveHandle(originalP, offsetP);
         }
     }
 
     onMouseUp(e) {
-        this.stage.off('stagemousemove', this.moveEventID.get(this.currentObjet));
-        this.moveEventID.delete(this.currentObjet);
-
-        let mouseDownP = this.mouseDownP.get(this.currentObjet);
+        let {mouseDownP, originalP, data, moveEventID} = this.objs.get(this.currentObject);
+        this.stage.off('stagemousemove', moveEventID);
         let moveP = new Vector(e.stageX, e.stageY);
         let offsetP = Vector.subVectors(moveP, mouseDownP);
-        let originalP = this.originalP.get(this.currentObjet);
 
-        if (Reflect.get(this.currentObjet, 'onEndDrag')) {
-            this.currentObjet.onEndDrag(originalP, offsetP);
+        if (Reflect.get(this.currentObject, 'onEndDrag')) {
+            this.currentObject.onEndDrag(data, offsetP);
         } else {
             this.defaultUpHandle(originalP, offsetP);
         }
@@ -72,14 +78,14 @@ class DragManager {
 
     defaultMoveHandle(originalP, offsetP) {
         let p = Vector.addVectors(originalP, offsetP);
-        this.currentObjet.x = p.x;
-        this.currentObjet.y = p.y;
+        this.currentObject.x = p.x;
+        this.currentObject.y = p.y;
     }
 
     defaultUpHandle(originalP, offsetP) {
         let p = Vector.addVectors(originalP, offsetP);
-        this.currentObjet.x = p.x;
-        this.currentObjet.y = p.y;
+        this.currentObject.x = p.x;
+        this.currentObject.y = p.y;
     }
 
     defaultDownHandle() {

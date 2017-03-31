@@ -4,16 +4,23 @@
 
 
 import {Vector} from "./Vector";
-import {Angle} from "./Angle";
 import {Distance} from "../util/Distance";
 
 class Circle {
-    constructor(x, y, radius, step = 0.1) {
+    set radius(value) {
+        this._radius = value;
+    }
+    set y(value) {
+        this._y = value;
+    }
+    set x(value) {
+        this._x = value;
+    }
+
+    constructor(x, y, radius) {
         this._x = x;
         this._y = y;
         this._radius = radius;
-        this._step = Angle.PI2 / parseInt(Angle.PI2 / step);
-
     }
 
     setValues(x, y, radius) {
@@ -37,16 +44,6 @@ class Circle {
 
     get center() {
         return new Vector(this._x, this._y);
-    }
-
-    get points() {
-        let i = 0, ps = [];
-        while (i <= Angle.PI2) {
-            ps.push(this.getPoint(i));
-            i += this._step;
-        }
-        ps.push(this.getPoint(0));//形成封闭环
-        return ps;
     }
 
     getPoint(angle = 0) {
@@ -77,7 +74,7 @@ class Circle {
     /**
      * 获取和圆的交点
      * @param c
-     * @returns {Vector|Array}
+     * @returns {Array}
      */
     getIntersectionWithCircle(c) {
         if (!this.isIntersectWithCircle(c))return null;
@@ -95,23 +92,34 @@ class Circle {
 
         let ps;
         if (y1 === y2) {
-            ps = new Vector(x, y1);
+            ps = [new Vector(x, y1)];
 
         } else {
             ps = [new Vector(x, y1), new Vector(x, y2)];
         }
 
-        if (ps instanceof Array) {
+        if (ps.length > 0) {
             ps.map((value) => {
                 value.rotateAround(Vector.ZERO, angle);
                 return value.setValues(value.x + this._x, value.y + this._y);
             });
-        } else {
-            ps.rotateAround(Vector.ZERO, angle);
-            ps.setValues(ps.x + this._x, ps.y + this._y);
         }
 
         return ps;
+    }
+
+    /**
+     * 检查p点是否在圆内
+     * @param p
+     * @returns {boolean}
+     */
+    testPoint(p) {
+
+        return this.center.sub(p).length <= this._radius;
+    }
+
+    rayCast() {
+
     }
 
     /**

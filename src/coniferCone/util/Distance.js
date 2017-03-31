@@ -51,12 +51,12 @@ class Distance {
      */
     static pointToLineSegment(p, ls) {
         //点是否在线段上
-        if (ls.isPointInLineSegment) {
+        if (ls.testPoint) {
             return {intersection: p.clone(), distance: 0};
         } else {
             //根据r值来判断P点在AB上的投影是否在线段上
             let AB = ls.toVector();
-            let AP = p.toVector().sub(ls._A);
+            let AP = p.toVector().sub(ls._p1);
             let len = ls._length;
             let r = AP.dot(AB) / (len * len);
             if (r >= 1) {

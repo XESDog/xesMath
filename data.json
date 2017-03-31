@@ -1,0 +1,31 @@
+[
+  {
+    "type": "circle",
+    "x": 100,
+    "y": 100,
+    "radius": 50
+  },
+  {
+    "type": "circle",
+    "x": 50,
+    "y": 100,
+    "radius": 20
+  },
+  {
+    "type": "lineSegment",
+    "p1": "10,20",
+    "p2": "200,250"
+  },
+  {
+    "type": "lineSegment",
+    "p1": "10,50",
+    "p2": "200,20"
+  },
+  {
+    "type": "rectangle",
+    "x": 10,
+    "y": 10,
+    "width": 100,
+    "height": 50
+  }
+]

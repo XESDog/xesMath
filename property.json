@@ -1,0 +1,116 @@
+{
+  "circle": {
+    "scopes": {
+      "x": [
+        0,
+        400
+      ],
+      "y": [
+        0,
+        300
+      ],
+      "radius": [
+        1,
+        100
+      ]
+    },
+    "styleObject": {
+      "stroke": "blue",
+      "fill": "rgba(255,0,0,0.9)",
+      "stroke-width": 2
+    }
+  },
+  "rectangle": {
+    "styleObject": {
+      "stroke": "green",
+      "fill": "rgba(0,255,0,0.9)",
+      "stroke-width": 2
+    },
+    "scopes": {
+      "x": [
+        0,
+        400
+      ],
+      "y": [
+        0,
+        300
+      ],
+      "width": [
+        1,
+        400
+      ],
+      "height": [
+        1,
+        300
+      ]
+    }
+  },
+  "line": {
+    "scopes": {
+      "k": [
+        -100,
+        100
+      ],
+      "b": [
+        -100,
+        100
+      ]
+    },
+    "styleObject": {
+      "stroke": "green",
+      "stroke-width": 2
+    }
+  },
+  "lineSegment": {
+    "scopes": {
+      "p1.x": [
+        0,
+        400
+      ],
+      "p1.y": [
+        0,
+        300
+      ],
+      "p2.x": [
+        0,
+        400
+      ],
+      "p2.y": [
+        0,
+        300
+      ]
+    },
+    "styleObject": {
+      "stroke": "green",
+      "stroke-width": 4
+    }
+  },
+  "triangle": {
+    "scopes": {
+      "p1.x": [
+        0,
+        400
+      ],
+      "p1.y": [
+        0,
+        300
+      ],
+      "p2.x": [
+        0,
+        400
+      ],
+      "p2.y": [
+        0,
+        300
+      ],
+      "p3.x": [
+        0,
+        400
+      ],
+      "p3.y": [
+        0,
+        300
+      ]
+    }
+  }
+}

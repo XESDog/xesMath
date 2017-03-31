@@ -6,50 +6,54 @@ import {Line} from "./Line";
 import {Vector} from "./Vector";
 import {Rectangle} from "../geom/Rectangle";
 
-import {throwMissingParameterError} from "../error/Error";
+import {throwArgumentsNumberInvalidError} from "../error/Error";
 
 class LineSegment extends Line {
-    constructor(a = throwMissingParameterError(), b = throwMissingParameterError(), c, d) {
+    set p2(value) {
+        this._p2 = value;
+    }
 
-        let x1, x2, y1, y2;
+    set p1(value) {
+        this._p1 = value;
+    }
+
+    constructor(...rest) {
+
+        let x1 = 0, y1 = 0, x2 = 0, y2 = 0;
         //两个点
-        if (arguments.length === 2) {
-            x1 = a.x;
-            y1 = a.y;
-            x2 = b.x;
-            y2 = b.y;
+        if (rest.length === 2) {
+            [{x: x1, y: y1}] = [rest[0]]
+                [{x: x2, y: y2}] = [rest[1]]
         }
         //4个坐标定义两个点
-        else if (arguments.length === 4) {
-            x1 = a;
-            y1 = b;
-            x2 = c;
-            y2 = d;
+        else if (rest.length === 4) {
+            [x1, y1, x2, y2] = rest
         } else {
-            throw new Error('the number of parameters in the wrong!')
+            throwArgumentsNumberInvalidError();
         }
 
         super(x1, y1, x2, y2);
-        this._A = new Vector(x1, y1);
-        this._B = new Vector(x2, y2);
+
+        this._p1 = new Vector(x1, y1);
+        this._p2 = new Vector(x2, y2);
         this._range = [Math.min(x1, x2), Math.max(x1, x2)];
 
     }
 
     get p1() {
-        return this._A;
+        return this._p1;
     }
 
     get p2() {
-        return this._B;
+        return this._p2;
     }
 
     get length() {
-        return new Vector().subVectors(this._A, this._B)._length;
+        return new Vector().subVectors(this._p1, this._p2)._length;
     }
 
     clone() {
-        return new LineSegment(this._A.x, this._A.y, this._B.x, this._B, y);
+        return new LineSegment(this._p1.x, this._p1.y, this._p2.x, this._p2, y);
     }
 
     /**
@@ -57,29 +61,48 @@ class LineSegment extends Line {
      */
     get perpendicularBisector() {
 
-        let center = Vector.lerpVectors(this._A, this._B, 0.5);
+        let center = Vector.lerpVectors(this._p1, this._p2, 0.5);
         return this.toLine().getVerticalLine(center.x, center.y);
     }
 
+
     /**
      * 是否点在线段上
-     * @param x
-     * @param y
+     * @param rest
      */
-    isPointInLineSegment(x, y) {
-        //是否在直线上
-        if (this.toLine().isPointInLine(x, y)) {
-            //是否在线段形成的矩形区域
-            // if (((x <= this.p1.x && x >= this.p2.x) || (x <= this.p2.x && x >= this.p1.x))
-            //     && (y <= this.p1.y && y >= this.p2.y) || (y <= this.p2.y && y >= this.p1.y)) {
-            //同时满足"在直线上"和"在线段形成的矩形区域"则该点在线段上
-            if (this.toRectangle().contains(x, y)) {
-                return true;
-            }
+    testPoint(...rest) {
+
+        let x, y;
+        if (rest.length === 1) {
+            ({x, y} = rest[0]);
+        } else if (rest.length === 2) {
+            ([x, y] = rest)
+        } else {
+            throwArgumentsNumberInvalidError();
         }
-        return false;
+
+        return (super.testPoint(x, y) && this._isClamp(x, y));
+
     }
 
+    /**
+     * 是否在区域间，主要用于已经确定x,y在直线上之后的判断
+     * @param x
+     * @param y
+     * @return {boolean}
+     */
+    _isClamp(x, y) {
+        if (this.isVertical) {
+            let [miny, maxy] = [Math.min(this._p1.y, this._p2.y), Math.max(this._p1.y, this._p2.y)]
+            return y <= maxy && y >= miny;
+        }
+        else if (super.k === 0) {
+            let [minx, maxx] = [Math.min(this._p1.x, this._p2.x), Math.max(this._p1.x, this._p2.x)]
+            return x <= maxx && x >= minx;
+        } else {
+            return this.toRectangle().contains(x, y);
+        }
+    }
 
     /**
      * 是否和线段ls相交
@@ -87,7 +110,16 @@ class LineSegment extends Line {
      */
     isIntersectWithLineSegment(ls) {
         let p = this.toLine().getIntersectionWithLine(ls.toLine());
-        return !!(p && this.isPointInLineSegment(p.x, p.y) && ls.isPointInLineSegment(p.x, p.y));
+        return !!(p && this._isClamp(p.x, p.y) && ls._isClamp(p.x, p.y));
+    }
+
+    /**
+     * 和线段的交点
+     * @return {Vector|null}
+     */
+    getIntersectionWithLineSegment(ls) {
+        let p = this.toLine().getIntersectionWithLine(ls.toLine());
+        if (p && this._isClamp(p.x, p.y) && ls._isClamp(p.x, p.y))return p;
     }
 
     /**
@@ -103,11 +135,11 @@ class LineSegment extends Line {
     }
 
     toLine() {
-        return new Line(this._A.x, this._A.y, this._B.x, this._B.y);
+        return new Line(this._p1.x, this._p1.y, this._p2.x, this._p2.y);
     }
 
     toVector() {
-        return Vector.subVectors(this._B, this._A);
+        return Vector.subVectors(this._p2, this._p1);
     }
 
     toRectangle() {
@@ -119,7 +151,7 @@ class LineSegment extends Line {
     }
 
     toString() {
-        return `[LineSegment (p1.x="${this._A.x}" p1.y="${this._A.y}" p2.x="${this._B.x}" p2.y="${this._B.y}")]`;
+        return `[LineSegment (p1.x="${this._p1.x}" p1.y="${this._p1.y}" p2.x="${this._p2.x}" p2.y="${this._p2.y}")]`;
     }
 }
 export {LineSegment};

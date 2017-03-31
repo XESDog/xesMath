@@ -1,16 +1,19 @@
 /**
  * Created by work on 2017/2/16.
  */
-
 import {Angle} from "./Angle";
 import {Vector} from "./Vector";
 
+import {throwArgumentsNumberInvalidError} from "../error/Error";
+
 class Line {
+
     constructor(...rest) {
         this._k = 0;
         this._b = 0;
         this._x = 0;
         this._range = [];
+
 
         //垂直于x轴
         if (rest.length === 1) {
@@ -38,8 +41,10 @@ class Line {
             }
 
         } else {
-            throw new Error('arguments number invalid');
+            throwArgumentsNumberInvalidError();
         }
+
+
         this._range = [-9999, 9999];
     }
 
@@ -60,14 +65,14 @@ class Line {
     }
 
     clone() {
-        if (this._k === Infinity) {
+        if (this.isVertical) {
             return new Line(this._x);
         }
         return new Line(this._k, this._b);
     }
 
     toString() {
-        if (this._k === Infinity) {
+        if (this.isVertical) {
             return `[Line (x=${this._x})]`;
         } else {
             return `[Line (k="${this._k}" b="${this._b}" )]`;
@@ -76,7 +81,7 @@ class Line {
 
     /**
      * 获取用于绘图的点
-     * @returns {*}
+     * @returns {Array}
      */
     get points() {
         let p;
@@ -112,21 +117,28 @@ class Line {
     }
 
     /**
-     * 是否点在直线上，支持传入Point作为参数以及x、y轴坐标作为参数
-     *
-     *  let p=new Point(1,2);
-     *  isPointInLine(p)
-     *  isPointInLine(1,2);
-     *
-     * @param x
-     * @param y
+     * 点是否在直线上
+     * 1个参数表示一个点
+     * 2个参数表示一个坐标
      * @returns {boolean}
+     * @param rest
      */
-    isPointInLine(x, y) {
-        if (arguments.length === 1 && x instanceof Vector) {
-            y = x._y;
-            x = x._x;
+    testPoint(...rest) {
+
+        let x = 0, y = 0;
+        if (rest.length === 1) {
+            if (rest[0] instanceof Vector) {
+                ({x, y} = rest[0]);
+            } else {
+                throwArgumentsNumberInvalidError();
+            }
+        } else if (rest.length === 2) {
+            ([x, y] = rest)
+        } else {
+            throwArgumentsNumberInvalidError();
         }
+
+
         if (this.isVertical) {
             return x === this._x;
         }
@@ -159,11 +171,25 @@ class Line {
 
     /**
      * 获取经过指定点的垂线
-     * @param x
-     * @param y
      * @returns {Line}
+     * @param rest
      */
-    getVerticalLine(x, y) {
+    getVerticalLine(...rest) {
+
+        let x = 0, y = 0;
+        if (rest.length === 1) {
+            if (rest[0] instanceof Vector) {
+                ({x, y} = rest[0]);
+            } else {
+                throwArgumentsNumberInvalidError();
+            }
+        } else if (rest.length === 2) {
+            ([x, y] = rest)
+        } else {
+            throwArgumentsNumberInvalidError();
+        }
+
+
         if (this.isVertical) {
             return new Line(0, y);
         }
@@ -175,25 +201,52 @@ class Line {
 
     /**
      * 获取经过指定点的垂线交点
-     * @param x
-     * @param y
      * @returns {*}
+     * @param rest
      */
-    getVerticalIntersection(x, y) {
-        if (this.isPointInLine(x, y))return new Vector(x, y);
+    getVerticalIntersection(...rest) {
+
+        let x = 0, y = 0;
+        if (rest.length === 1) {
+            if (rest[0] instanceof Vector) {
+                ({x, y} = rest[0]);
+            } else {
+                throwArgumentsNumberInvalidError();
+            }
+        } else if (rest.length === 2) {
+            ([x, y] = rest)
+        } else {
+            throwArgumentsNumberInvalidError();
+        }
+
+
+        if (this.testPoint(x, y))return new Vector(x, y);
         let verticalLine = this.getVerticalLine(x, y);
         return this.getIntersectionWithLine(verticalLine);
     }
 
     /**
      * 获取对称点
-     * @param x
-     * @param y
-     * @returns {Point}
+     * @returns {Vector}
+     * @param rest
      */
-    getSymmetryPoint(x, y) {
+    getSymmetryPoint(...rest) {
 
-        if (this.isPointInLine(x, y))return new Vector(x, y);
+
+        let x = 0, y = 0;
+        if (rest.length === 1) {
+            if (rest[0] instanceof Vector) {
+                ({x, y} = rest[0]);
+            } else {
+                throwArgumentsNumberInvalidError();
+            }
+        } else if (rest.length === 2) {
+            ([x, y] = rest)
+        } else {
+            throwArgumentsNumberInvalidError();
+        }
+
+        if (this.testPoint(x, y))return new Vector(x, y);
 
         //换算成一般式
         const A = this._k;
@@ -242,4 +295,7 @@ class Line {
     }
 
 }
-export {Line};
+
+export {
+    Line
+}

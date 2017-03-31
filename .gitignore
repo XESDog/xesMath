@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 xesMath.iml
-gulpfile.js
 lib/
 dist/
+.DS_Store
+node_modules/

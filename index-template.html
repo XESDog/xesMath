@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>coniferCone Test</title>
+    <script src="../../lib/dat.gui.min.js"></script>
+    <script src="../../lib/createjs-2015.11.26.min.js"></script>
+    <script src="../../lib/vue.js"></script>
+</head>
+<body>
+
+
+<script type="text/x-template" id="circle-template">
+    <circle @focus="onfocus" :cx="geomData.x" :cy="geomData.y" :r="geomData.radius"
+            :style="geomData.styleObject"/>
+</script>
+
+<script type="text/x-template" id="rectangle-template">
+    <rect @focus="onfocus" :x="geomData.x" :y="geomData.y" :width="geomData.width" :height="geomData.height"
+          :style="geomData.styleObject"/>
+</script>
+
+<script type="text/x-template" id="line-template">
+    <line @focus="onfocus" :x1="geomData.p1.x" :y1="geomData.p1.y" :x2="geomData.p2.x" :y2="geomData.p2.y"
+          :style="geomData.styleObject"></line>
+</script>
+
+
+<div id="stage" style="width: 400px;height: 300px ;border: 1px solid black">
+
+    <svg viewBox="0 0 400 300">
+        <g v-for="(item,index) in geoms">
+            <g v-if="item.type==='circle'">
+                <circle-template v-on:showgui="onShowGUI" :geom-data="item"></circle-template>
+            </g>
+            <g v-else-if="item.type==='lineSegment'">
+                <line-template v-on:showgui="onShowGUI" :geom-data="item"></line-template>
+            </g>
+
+            <g v-else-if="item.type==='rectangle'">
+                <rectangle-template v-on:showgui="onShowGUI" :geom-data="item"></rectangle-template>
+            </g>
+
+        </g>
+        <!--交点-->
+
+        <g v-if="intersections&&intersections.length>0" v-for="(item,index) in intersections">
+            <circle-template :geom-data="item"></circle-template>
+        </g>
+
+    </svg>
+    <div id="datGUI"></div>
+</div>
+
+</body>
+</html>

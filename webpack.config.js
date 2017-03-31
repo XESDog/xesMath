@@ -10,7 +10,7 @@ const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');
 module.exports = {
     entry: {
         coniferCone: './src/coniferCone/coniferCone.js',
-        main: './src/sample/index.js'
+        main: './index.js'
     },
     output: {
         filename: "js/[name].[chunkhash].js",
@@ -22,34 +22,26 @@ module.exports = {
             names: ['coniferCone', 'manifest']
         }),
         new HtmlWebpackPlugin({
-            filename: './sample/index.html',
-            template: './src/sample/index-template.html'
+            filename: './index.html',
+            template: './index-template.html'
         }),
-        // new ExtractTextWebpackPlugin('style.css'),
+        new ExtractTextWebpackPlugin('style.css'),
     ],
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.js$/,
                 exclude: /(node_modules)/,
-                include: './src',
-                use: [{
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [['es2015', {modules: false}]],
-                        plugins: ['syntax-dynamic-import']
-                    }
-                }]
-
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015'],
+                }
             },
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
-                // use: ExtractTextWebpackPlugin.extract({
-                //     use: 'css-loader'
-                // })
             },
         ],
     },
 
-}
+};

@@ -7,8 +7,8 @@ function throwMissingParameterError() {
     throw new Error('Missing parameter!');
 }
 
-function throwWrongNumberOfParameterError() {
-    throw new Error('the number of parameters in the wrong!')
+function throwArgumentsNumberInvalidError() {
+    throw new Error('arguments number invalid')
 }
 
-export {throwMissingParameterError,throwWrongNumberOfParameterError}
+export {throwMissingParameterError, throwArgumentsNumberInvalidError}

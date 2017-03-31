@@ -1,9 +1,67 @@
 /**
  * Created by work on 2017/2/21.
  */
+import {LineSegment} from "./LineSegment";
+import {throwArgumentsNumberInvalidError} from "../error/Error";
 class Rectangle {
+    get height() {
+        return this._height;
+    }
+
+    set height(value) {
+        this._height = value;
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    set width(value) {
+        this._width = value;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    set y(value) {
+        this._y = value;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    set x(value) {
+        this._x = value;
+    }
+
     constructor(x = 0, y = 0, w = 0, h = 0) {
+        this._x = x;
+        this._y = y;
+        this._width = w;
+        this._height = h;
         this.setValues(x, y, w, h);
+    }
+
+    get leftLineSegment() {
+        return new LineSegment(this._x, this._y, this._x, this._y + this._height);
+    }
+
+    get rightLineSegment() {
+        return new LineSegment(this._x + this._width, this._y, this._x + this._width, this._y + this._height);
+    }
+
+    get topLineSegment() {
+        return new LineSegment(this._x, this._y, this._x + this._width, this._y);
+    }
+
+    get bottomLineSegment() {
+        return new LineSegment(this._x, this._y + this._height, this._x + this._width, this._y + this._height);
+    }
+
+    get edges(){
+        return [this.topLineSegment, this.rightLineSegment, this.bottomLineSegment, this.leftLineSegment];
     }
 
     /**
@@ -83,6 +141,23 @@ class Rectangle {
     copy(rectangle) {
         return this.setValues(rectangle._x, rectangle._y, rectangle.width, rectangle.height);
     };
+
+    testPoint(...rest) {
+        let x, y;
+        if (rest.length === 1) {
+            ({x, y} = rest[0]);
+        } else if (rest.length === 2) {
+            ([x, y] = rest)
+        } else {
+            throwArgumentsNumberInvalidError();
+        }
+
+        return this.contains(x, y, 1, 1);
+    }
+
+    rayCast() {
+
+    }
 
     /**
      * Returns true if this rectangle fully encloses the described point or rectangle.

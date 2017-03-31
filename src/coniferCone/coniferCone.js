@@ -13,16 +13,16 @@ import {Vector} from "./geom/Vector";
 import {Distance} from "./util/Distance";
 import {Intersection} from "./util/Intersection";
 
-{
-    Angle
-    Circle
-    LineSegment
-    Line
-    Rectangle
-    Triangle
-    Vector
+export default {
+    Angle,
+    Circle,
+    LineSegment,
+    Line,
+    Rectangle,
+    Triangle,
+    Vector,
 
-    Distance
-    Intersection
+    Distance,
+    Intersection,
 }
 
